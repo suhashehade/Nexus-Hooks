@@ -10,7 +10,7 @@ const PORT = 8080;
 
 app.use("/app", express.static("./src/app"));
 
-app.get("/health", healthRoute);
+app.use("/health", healthRoute);
 app.use("/api/pipeline", pipelineRoutes);
 
 app.use(errorHandlerMiddleware);
