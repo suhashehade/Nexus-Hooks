@@ -1,24 +1,24 @@
-import { createPipeline, deletePipeline, getPipelineByID, getPipelines, } from "../../db/queries/pipelines.js";
-import { getSourceByID } from "../../db/queries/sources.js";
-import { NotFoundError } from "../../lib/classes/errors.js";
-import { createPipelineSubscriber } from "../../db/queries/pipelinesSubscribers.js";
+import { createPipeline, deletePipeline, getPipelineByID, getPipelines, } from "../db/queries/pipelines.js";
+import { getSourceByID } from "../db/queries/sources.js";
+import { NotFoundError } from "../lib/classes/errors.js";
+import { createPipelineSubscriber } from "../db/queries/pipelinesSubscribers.js";
 export const addPipelineHandler = async (req, res, next) => {
     try {
-        const source = await getSourceByID(req.body.sourceId);
+        const { sourceId, subscribers } = req.body;
+        const source = await getSourceByID(sourceId);
         if (!source) {
             throw new NotFoundError("Source Not Found!");
         }
-        let pipelines;
-        const response = await createPipeline(req.body);
-        for (const subscriberId of req.body.subscribers) {
-            await createPipelineSubscriber(response.id, subscriberId);
-            pipelines = await getPipelineByID(response.id);
+        const pipeline = await createPipeline(req.body);
+        for (const subscriberId of subscribers) {
+            await createPipelineSubscriber(pipeline.id, subscriberId);
         }
+        const fullPipeline = await getPipelineByID(pipeline.id);
         res.status(201).json({
-            id: response.id,
-            name: response.name,
-            source: source,
-            subscribers: pipelines?.subscribers,
+            id: pipeline.id,
+            name: pipeline.name,
+            source,
+            subscribers: fullPipeline?.subscribers ?? [],
         });
     }
     catch (error) {

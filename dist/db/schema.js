@@ -12,6 +12,16 @@ export const pipelines = pgTable("pipelines", {
     name: varchar("name", { length: 256 }).notNull(),
     secret: varchar("secret").notNull(),
 });
+export const actions = pgTable("actions", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    pipelineId: uuid("pipeline_id")
+        .references(() => pipelines.id)
+        .notNull(),
+    type: varchar("type").notNull(),
+    config: jsonb("config").notNull(),
+    order: integer("order").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+});
 export const subscribers = pgTable("subscribers", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 256 }).notNull(),
@@ -21,6 +31,7 @@ export const sources = pgTable("sources", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 256 }).notNull(),
     address: varchar("address").notNull(),
+    url: varchar("url").notNull(),
 });
 export const pipelines_subscribers = pgTable("pipelines_subscribers", {
     id: uuid("id").primaryKey().defaultRandom(),

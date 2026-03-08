@@ -1,12 +1,13 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import {
   createPipeline,
   deletePipeline,
   getPipelineByID,
   getPipelines,
-} from "../../db/queries/pipelines.js";
-import { getSourceByID } from "../../db/queries/sources.js";
-import { NotFoundError } from "../../lib/classes/errors.js";
+} from "../db/queries/pipelines.js";
+import { getSourceByID } from "../db/queries/sources.js";
+import { NotFoundError } from "../lib/classes/errors.js";
+import { createPipelineSubscriber } from "../db/queries/pipelinesSubscribers.js";
 
 export const addPipelineHandler = async (
   req: Request,
@@ -14,17 +15,28 @@ export const addPipelineHandler = async (
   next: NextFunction,
 ) => {
   try {
-    const source = await getSourceByID(req.body.sourceId);
+    const { sourceId, subscribers } = req.body;
+
+    const source = await getSourceByID(sourceId);
     if (!source) {
       throw new NotFoundError("Source Not Found!");
     }
-    const response = await createPipeline(req.body);
+
+    const pipeline = await createPipeline(req.body);
+
+    for (const subscriberId of subscribers) {
+      await createPipelineSubscriber(pipeline.id, subscriberId);
+    }
+
+    const fullPipeline = await getPipelineByID(pipeline.id);
+
     res.status(201).json({
-      id: response.id,
-      name: response.name,
-      source: source,
+      id: pipeline.id,
+      name: pipeline.name,
+      source,
+      subscribers: fullPipeline?.subscribers ?? [],
     });
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 };
@@ -53,13 +65,13 @@ export const getPipelineByIDHandler = async (
     if (!pipeline) {
       throw new NotFoundError("Pipeline Not Found");
     }
-    const source = await getSourceByID(pipeline.sourceId);
-    if (!source) {
-      throw new NotFoundError("Source Not Found");
-    }
-    res
-      .status(200)
-      .json({ id: pipeline.id, name: pipeline.name, source: source });
+
+    res.status(200).json({
+      id: pipeline.id,
+      name: pipeline.name,
+      source: pipeline.source,
+      subscribers: pipeline.subscribers,
+    });
   } catch (error: any) {
     next(error);
   }
