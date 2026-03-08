@@ -1,4 +1,4 @@
-import { BadRequestError, ForbiddenError, NotFoundError, UnAuthorizedError, } from "./lib/classes/errors.js";
+import { BadRequestError, ForbiddenError, NotFoundError, UnAuthorizedError, } from "../lib/classes/errors.js";
 import z from "zod";
 export function errorHandlerMiddleware(err, req, res, next) {
     if (err instanceof BadRequestError) {
