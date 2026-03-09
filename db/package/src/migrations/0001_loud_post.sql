@@ -1,0 +1,1 @@
+ALTER TABLE "sources" ADD COLUMN "url" varchar NOT NULL;

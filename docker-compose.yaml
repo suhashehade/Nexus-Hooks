@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nexusdb
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  server:
+    build: ./server
+    container_name: server
+    volumes:
+      - ./db/dist:/app/db/dist
+    ports:
+      - "8080:4000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/nexusdb?sslmode=disable
+    command: npm run dev
+
+  worker:
+    build: ./worker
+    container_name: worker
+    ports:
+      - "8081:5000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/nexusdb?sslmode=disable
+      QUEUE_NAME: jobs
+    command: npm run dev
+
+  client:
+    build: ./client
+    container_name: client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+      - worker
+    command: npm run dev
+
+volumes:
+  db-data:
