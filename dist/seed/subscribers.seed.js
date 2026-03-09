@@ -4,12 +4,12 @@ export async function seedSubscribers() {
     await createSubscriber({
         id: randomUUID(),
         name: "Accounting",
-        url: "http://localhost:4000/accounting",
+        url: "http://localhost:8081/api/subscribers/accounting",
     });
     await createSubscriber({
         id: randomUUID(),
         name: "Shipping",
-        url: "http://localhost:4001/shipping",
+        url: "http://localhost:8081/api/subscribers/shipping",
     });
     console.log("✅ subscribers seeded");
 }

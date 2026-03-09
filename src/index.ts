@@ -1,6 +1,7 @@
 import express from "express";
 import healthRoute from "./routes/health.js";
-import pipelineRoutes from "./routes/pipelines.js";
+import pipelinesRoutes from "./routes/pipelines.js";
+import actionsRoutes from "./routes/actions.js";
 
 import { errorHandlerMiddleware } from "./middlewares/handleErrors.js";
 
@@ -11,7 +12,8 @@ const PORT = 8080;
 app.use("/app", express.static("./src/app"));
 
 app.use("/health", healthRoute);
-app.use("/api/pipeline", pipelineRoutes);
+app.use("/api/pipelines", pipelinesRoutes);
+app.use("/api/actions", actionsRoutes);
 
 app.use(errorHandlerMiddleware);
 app.listen(PORT, () => {

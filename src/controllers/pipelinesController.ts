@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   createPipeline,
   deletePipeline,
@@ -8,6 +8,8 @@ import {
 import { getSourceByID } from "../db/queries/sources.js";
 import { NotFoundError } from "../lib/classes/errors.js";
 import { createPipelineSubscriber } from "../db/queries/pipelinesSubscribers.js";
+import { createPipelineAction } from "../db/queries/pipelineActions.js";
+import { generatePipelineSecret } from "../utils/generatePipelineSecret.js";
 
 export const addPipelineHandler = async (
   req: Request,
@@ -15,17 +17,25 @@ export const addPipelineHandler = async (
   next: NextFunction,
 ) => {
   try {
-    const { sourceId, subscribers } = req.body;
+    const { sourceId, subscribers, actions } = req.body;
 
     const source = await getSourceByID(sourceId);
     if (!source) {
       throw new NotFoundError("Source Not Found!");
     }
-
-    const pipeline = await createPipeline(req.body);
+    const secret = generatePipelineSecret();
+    const pipeline = await createPipeline({
+      sourceId: req.body.sourceId,
+      name: req.body.name,
+      secret,
+    });
 
     for (const subscriberId of subscribers) {
       await createPipelineSubscriber(pipeline.id, subscriberId);
+    }
+
+    for (const actionId of actions) {
+      await createPipelineAction(pipeline.id, actionId);
     }
 
     const fullPipeline = await getPipelineByID(pipeline.id);
@@ -35,6 +45,7 @@ export const addPipelineHandler = async (
       name: pipeline.name,
       source,
       subscribers: fullPipeline?.subscribers ?? [],
+      actions: fullPipeline?.actions ?? [],
     });
   } catch (error) {
     next(error);

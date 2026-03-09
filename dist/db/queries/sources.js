@@ -12,18 +12,3 @@ export async function getSourceByID(sourceId) {
         .where(eq(sources.id, sourceId));
     return result;
 }
-// export async function getChirps() {
-//   const result = await db.select().from(chirps);
-//   return result;
-// }
-// export async function getChirpsByUserId(authorId: string) {
-//   const result = await db
-//     .select()
-//     .from(chirps)
-//     .where(eq(chirps.user_id, authorId));
-//   return result;
-// }
-// export async function deleteChirpById(chirpId: string) {
-//   await db.delete(chirps).where(eq(chirps.id, chirpId));
-//   return;
-// }

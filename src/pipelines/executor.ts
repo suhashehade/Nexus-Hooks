@@ -1,2 +1,2 @@
 // execute pipeline's actions in orders:
-// dedup -> filter -> validate -> transform -> enrich -> routing
+// filter -> dedup -> normalize -> validate -> transform -> currencyChange -> labeling -> enrich -> routing

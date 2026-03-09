@@ -5,6 +5,7 @@ import {
   uuid,
   jsonb,
   integer,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const pipelines = pgTable("pipelines", {
@@ -23,12 +24,12 @@ export const pipelines = pgTable("pipelines", {
 
 export const actions = pgTable("actions", {
   id: uuid("id").defaultRandom().primaryKey(),
-  pipelineId: uuid("pipeline_id")
-    .references(() => pipelines.id)
-    .notNull(),
   type: varchar("type").notNull(),
   config: jsonb("config").notNull(),
   order: integer("order").notNull(),
+  required: boolean("required").default(false),
+  editable: boolean("editable").default(false),
+  description: varchar("description").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -53,6 +54,16 @@ export const pipelines_subscribers = pgTable("pipelines_subscribers", {
   subscriberId: uuid("subscriber_id")
     .notNull()
     .references(() => subscribers.id, { onDelete: "cascade" }),
+});
+
+export const pipelines_actions = pgTable("pipelines_actions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  pipelineId: uuid("pipeline_id")
+    .notNull()
+    .references(() => pipelines.id, { onDelete: "cascade" }),
+  actionId: uuid("action_id")
+    .notNull()
+    .references(() => actions.id, { onDelete: "cascade" }),
 });
 
 export const jobs = pgTable("jobs", {
@@ -87,6 +98,8 @@ export const delivery_attempts = pgTable("delivery_attempts", {
 export type Source = typeof sources.$inferInsert;
 export type SubScriber = typeof subscribers.$inferInsert;
 export type Pipeline = typeof pipelines.$inferInsert;
+export type Action = typeof actions.$inferInsert;
 export type Job = typeof jobs.$inferInsert;
 export type PipelinesSubscriber = typeof pipelines_subscribers.$inferInsert;
+export type PipelinesAction = typeof pipelines_actions.$inferInsert;
 export type DeliveryAttempt = typeof delivery_attempts.$inferInsert;

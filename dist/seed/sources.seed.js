@@ -5,13 +5,13 @@ export async function seedSources() {
         id: randomUUID(),
         name: "Royal Restaurant",
         address: "Nablus",
-        url: "http://localhost:3000/webhook",
+        url: "http://localhost:8080/api/webhooks/sources/royal",
     });
     await createSource({
         id: randomUUID(),
         name: "Hamsa Store",
         address: "Ramallah",
-        url: "http://localhost:3001/webhook",
+        url: "http://localhost:8080/api/webhooks/sources/hamsa",
     });
     console.log("✅ sources seeded");
 }

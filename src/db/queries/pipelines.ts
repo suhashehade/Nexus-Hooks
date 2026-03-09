@@ -1,10 +1,17 @@
 import { eq } from "drizzle-orm";
 import { db } from "../index.js";
 import {
+  Action,
+  actions,
   Pipeline,
   pipelines,
+  pipelines_actions,
   pipelines_subscribers,
+  PipelinesAction,
+  PipelinesSubscriber,
+  Source,
   sources,
+  SubScriber,
   subscribers,
 } from "../schema.js";
 
@@ -27,9 +34,18 @@ export async function getPipelines() {
       subscriberId: subscribers.id,
       subscriberName: subscribers.name,
       subscriberUrl: subscribers.url,
+
+      actionId: actions.id,
+      actionName: actions.type,
+      actionEditable: actions.editable,
+      actionRequired: actions.required,
+      actionDescription: actions.description,
+      actionOrder: actions.order,
+      actionConfig: actions.config,
     })
     .from(pipelines)
     .innerJoin(sources, eq(pipelines.sourceId, sources.id))
+
     .leftJoin(
       pipelines_subscribers,
       eq(pipelines.id, pipelines_subscribers.pipelineId),
@@ -37,7 +53,10 @@ export async function getPipelines() {
     .leftJoin(
       subscribers,
       eq(pipelines_subscribers.subscriberId, subscribers.id),
-    );
+    )
+
+    .leftJoin(pipelines_actions, eq(pipelines.id, pipelines_actions.pipelineId))
+    .leftJoin(actions, eq(pipelines_actions.actionId, actions.id));
 
   if (rows.length === 0) return [];
 
@@ -55,19 +74,45 @@ export async function getPipelines() {
           address: row.sourceAddress,
         },
         subscribers: [],
+        actions: [],
       });
     }
 
-    if (row.subscriberId) {
-      pipelinesMap.get(row.pipelineId).subscribers.push({
+    const pipeline = pipelinesMap.get(row.pipelineId);
+
+    // subscribers
+    if (
+      row.subscriberId &&
+      !pipeline.subscribers.some((s: SubScriber) => s.id === row.subscriberId)
+    ) {
+      pipeline.subscribers.push({
         id: row.subscriberId,
         name: row.subscriberName,
         url: row.subscriberUrl,
       });
     }
+
+    // actions
+    if (
+      row.actionId &&
+      !pipeline.actions.some((a: Action) => a.id === row.actionId)
+    ) {
+      pipeline.actions.push({
+        id: row.actionId,
+        name: row.actionName,
+        editable: row.actionEditable,
+        required: row.actionRequired,
+        description: row.actionDescription,
+        order: row.actionOrder,
+        config: row.actionConfig,
+      });
+    }
   }
 
-  return Array.from(pipelinesMap.values());
+  return Array.from(pipelinesMap.values()).map((pipeline) => ({
+    ...pipeline,
+    actions: pipeline.actions.sort((a: Action, b: Action) => a.order - b.order),
+  }));
 }
 
 export async function getPipelineByID(pipelineId: string) {
@@ -84,9 +129,18 @@ export async function getPipelineByID(pipelineId: string) {
       subscriberId: subscribers.id,
       subscriberName: subscribers.name,
       subscriberUrl: subscribers.url,
+
+      actionId: actions.id,
+      actionName: actions.type,
+      actionEditable: actions.editable,
+      actionRequired: actions.required,
+      actionDescription: actions.description,
+      actionOrder: actions.order,
+      actionConfig: actions.config,
     })
     .from(pipelines)
     .innerJoin(sources, eq(pipelines.sourceId, sources.id))
+
     .leftJoin(
       pipelines_subscribers,
       eq(pipelines.id, pipelines_subscribers.pipelineId),
@@ -95,11 +149,21 @@ export async function getPipelineByID(pipelineId: string) {
       subscribers,
       eq(pipelines_subscribers.subscriberId, subscribers.id),
     )
+
+    .leftJoin(pipelines_actions, eq(pipelines.id, pipelines_actions.pipelineId))
+    .leftJoin(actions, eq(pipelines_actions.actionId, actions.id))
+
     .where(eq(pipelines.id, pipelineId));
 
   if (rows.length === 0) return null;
 
-  const pipeline = {
+  const pipeline: {
+    id: string;
+    name: string;
+    source: Source;
+    subscribers: SubScriber[];
+    actions: Action[];
+  } = {
     id: rows[0].pipelineId,
     name: rows[0].pipelineName,
     source: {
@@ -108,18 +172,42 @@ export async function getPipelineByID(pipelineId: string) {
       url: rows[0].sourceUrl,
       address: rows[0].sourceAddress,
     },
-    subscribers: rows
-      .filter((r) => r.subscriberId)
-      .map((r) => ({
-        id: r.subscriberId,
-        name: r.subscriberName,
-        url: r.subscriberUrl,
-      })),
+    subscribers: [],
+    actions: [],
   };
+
+  for (const row of rows) {
+    if (
+      row.subscriberId &&
+      !pipeline.subscribers.some((s) => s.id === row.subscriberId)
+    ) {
+      pipeline.subscribers.push({
+        id: row.subscriberId,
+        name: row.subscriberName!,
+        url: row.subscriberUrl!,
+      });
+    }
+
+    if (
+      row.actionId &&
+      !pipeline.actions.some((a: Action) => a.id === row.actionId)
+    ) {
+      pipeline.actions.push({
+        id: row.actionId,
+        type: row.actionName!,
+        editable: row.actionEditable,
+        required: row.actionRequired,
+        description: row.actionDescription!,
+        order: row.actionOrder!,
+        config: row.actionConfig,
+      });
+    }
+  }
+
+  pipeline.actions.sort((a: Action, b: Action) => a.order - b.order);
 
   return pipeline;
 }
-
 export async function deletePipeline(pipelineId: string) {
   await db.delete(pipelines).where(eq(pipelines.id, pipelineId));
 }
