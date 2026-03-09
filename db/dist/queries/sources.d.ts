@@ -1,7 +1,7 @@
 import { Source } from "../schema.js";
 export declare const createSource: (source: Source) => Promise<{
-    name: string;
     id: string;
+    name: string;
     address: string;
     url: string;
 }>;

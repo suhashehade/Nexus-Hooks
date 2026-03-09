@@ -1,10 +1,15 @@
 import * as schema from "./schema.js";
-import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "./config.js";
-const postgres = require("postgres");
+import postgres from "postgres";
 
 const migrationClient = postgres(config.db.url!, { max: 1 });
-await migrate(drizzle(migrationClient), config.db.migrationConfig!);
-
 export const db = drizzle(migrationClient, { schema });
+
+export * from "./queries/actions.js";
+export * from "./queries/jobs.js";
+export * from "./queries/pipelineActions.js";
+export * from "./queries/pipelines.js";
+export * from "./queries/pipelinesSubscribers.js";
+export * from "./queries/sources.js";
+export * from "./queries/subscribers.js";

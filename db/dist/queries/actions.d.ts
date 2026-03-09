@@ -1,13 +1,13 @@
 import { Action } from "../schema.js";
 export declare const createAction: (action: Action) => Promise<{
-    required: boolean | null;
-    type: string;
     id: string;
-    order: number;
-    description: string;
-    config: unknown;
     createdAt: Date | null;
+    type: string;
+    config: unknown;
+    order: number;
+    required: boolean | null;
     editable: boolean | null;
+    description: string;
 }>;
 export declare const getActions: () => Promise<{
     id: string;

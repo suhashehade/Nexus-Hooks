@@ -1,11 +1,11 @@
 import { Action, Pipeline, Source, SubScriber } from "../schema.js";
 export declare const createPipeline: (pipeline: Pipeline) => Promise<{
-    name: string;
     id: string;
-    secret: string;
+    name: string;
     createdAt: Date;
     updatedAt: Date;
     sourceId: string;
+    secret: string;
 }>;
 export declare const getPipelines: () => Promise<any[]>;
 export declare const getPipelineByID: (pipelineId: string) => Promise<{
