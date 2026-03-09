@@ -43,7 +43,7 @@ export const sources = pgTable("sources", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 256 }).notNull(),
   address: varchar("address").notNull(),
-  url: varchar("url").notNull(),
+  url: varchar("url").notNull().unique(),
 });
 
 export const pipelines_subscribers = pgTable("pipelines_subscribers", {
@@ -71,7 +71,7 @@ export const jobs = pgTable("jobs", {
   pipelineId: uuid("pipeline_id")
     .notNull()
     .references(() => pipelines.id, { onDelete: "cascade" }),
-  payload: jsonb("payload"),
+  payload: jsonb("payload").notNull(),
   status: varchar("status").notNull().default("pending"), // pending / processing / completed / failed
   priority: integer("priority").default(0),
   attempts: integer("attempts").default(0),

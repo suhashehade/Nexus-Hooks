@@ -5,7 +5,6 @@ import {
   NotFoundError,
   UnAuthorizedError,
 } from "../lib/classes/errors.js";
-import { PostgresError } from "postgres";
 import z from "zod";
 
 export function errorHandlerMiddleware(
@@ -34,26 +33,6 @@ export function errorHandlerMiddleware(
     return res.status(400).send({
       errors: err.issues,
     });
-  }
-
-  if (err instanceof PostgresError) {
-    if (err.code === "23505") {
-      return res.status(409).send({
-        error: "Duplicate record",
-      });
-    }
-
-    if (err.code === "23503") {
-      return res.status(400).send({
-        error: "Invalid reference (foreign key)",
-      });
-    }
-
-    if (err.code === "23502") {
-      return res.status(400).send({
-        error: "Missing required field",
-      });
-    }
   }
 
   return res.status(500).send({

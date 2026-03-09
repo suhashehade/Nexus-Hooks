@@ -44,7 +44,7 @@ export async function seedActions() {
             order: 4,
             editable: true,
             required: true,
-            description: "Filter order by total price have minimum custom value (by default: 20)",
+            description: "Filter order by price = 10",
             config: { minPrice: 20 },
         },
         {
@@ -52,7 +52,7 @@ export async function seedActions() {
             order: 5,
             editable: true,
             required: false,
-            description: "Normalize phone number to customized country and normalize the city name",
+            description: "Add Palestinian code to phone number and capitalize the city name",
             config: { phoneFormat: "palestine", cityCase: "capitalize" },
         },
         {

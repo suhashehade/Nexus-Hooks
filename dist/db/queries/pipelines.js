@@ -50,7 +50,6 @@ export async function getPipelines() {
             });
         }
         const pipeline = pipelinesMap.get(row.pipelineId);
-        // subscribers
         if (row.subscriberId &&
             !pipeline.subscribers.some((s) => s.id === row.subscriberId)) {
             pipeline.subscribers.push({
@@ -59,7 +58,6 @@ export async function getPipelines() {
                 url: row.subscriberUrl,
             });
         }
-        // actions
         if (row.actionId &&
             !pipeline.actions.some((a) => a.id === row.actionId)) {
             pipeline.actions.push({
@@ -146,6 +144,13 @@ export async function getPipelineByID(pipelineId) {
 }
 export async function deletePipeline(pipelineId) {
     await db.delete(pipelines).where(eq(pipelines.id, pipelineId));
+}
+export async function getPipelineBySourceID(sourceId) {
+    const [result] = await db
+        .select()
+        .from(pipelines)
+        .where(eq(pipelines.sourceId, sourceId));
+    return result;
 }
 export async function updatePipelineStatus(pipelineId, pipeline) {
     await db.update(pipelines).set(pipeline).where(eq(pipelines.id, pipelineId));
