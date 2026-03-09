@@ -1,6 +1,8 @@
 node_modules
 server/node_modules
 client/node_modules
+worker/node_modules
+db/node_modules
 .env
 .env.example
 server/.env
