@@ -1,4 +1,4 @@
-import { getActions } from "db/queries/actions.js";
+import { getActions } from "db";
 export const getAllActionsHandler = async (req, res, next) => {
     try {
         const actions = await getActions();

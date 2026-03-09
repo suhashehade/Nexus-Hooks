@@ -4,11 +4,11 @@ import {
   deletePipeline,
   getPipelineByID,
   getPipelines,
-} from "db/queries/pipelines.js";
-import { getSourceByID } from "db/queries/sources";
+} from "db";
+import { getSourceByID } from "db";
 import { NotFoundError } from "../lib/classes/errors.js";
-import { createPipelineSubscriber } from "db/queries/pipelinesSubscribers";
-import { createPipelineAction } from "db/queries/pipelineActions";
+import { createPipelineSubscriber } from "db";
+import { createPipelineAction } from "db";
 import { generatePipelineSecret } from "../utils/generatePipelineSecret.js";
 
 export const addPipelineHandler = async (

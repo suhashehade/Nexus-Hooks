@@ -1,7 +1,7 @@
-import { getSourceByURL } from "db/queries/sources";
+import { getSourceByURL } from "db";
 import { BadRequestError, ForbiddenError, NotFoundError, } from "../lib/classes/errors.js";
-import { getPipelineBySourceID } from "db/queries/pipelines";
-import { createJob } from "db/queries/jobs";
+import { getPipelineBySourceID } from "db";
+import { createJob } from "db";
 export const webhookIngestionHandler = async (req, res, next) => {
     try {
         const { event, payload } = req.body;
