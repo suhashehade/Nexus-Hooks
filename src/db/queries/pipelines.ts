@@ -7,20 +7,18 @@ import {
   pipelines,
   pipelines_actions,
   pipelines_subscribers,
-  PipelinesAction,
-  PipelinesSubscriber,
   Source,
   sources,
   SubScriber,
   subscribers,
 } from "../schema.js";
 
-export async function createPipeline(pipeline: Pipeline) {
+export const createPipeline = async (pipeline: Pipeline) => {
   const [result] = await db.insert(pipelines).values(pipeline).returning();
   return result;
-}
+};
 
-export async function getPipelines() {
+export const getPipelines = async () => {
   const rows = await db
     .select({
       pipelineId: pipelines.id,
@@ -80,7 +78,6 @@ export async function getPipelines() {
 
     const pipeline = pipelinesMap.get(row.pipelineId);
 
-    
     if (
       row.subscriberId &&
       !pipeline.subscribers.some((s: SubScriber) => s.id === row.subscriberId)
@@ -92,7 +89,6 @@ export async function getPipelines() {
       });
     }
 
-    
     if (
       row.actionId &&
       !pipeline.actions.some((a: Action) => a.id === row.actionId)
@@ -113,9 +109,9 @@ export async function getPipelines() {
     ...pipeline,
     actions: pipeline.actions.sort((a: Action, b: Action) => a.order - b.order),
   }));
-}
+};
 
-export async function getPipelineByID(pipelineId: string) {
+export const getPipelineByID = async (pipelineId: string) => {
   const rows = await db
     .select({
       pipelineId: pipelines.id,
@@ -207,22 +203,23 @@ export async function getPipelineByID(pipelineId: string) {
   pipeline.actions.sort((a: Action, b: Action) => a.order - b.order);
 
   return pipeline;
-}
-export async function deletePipeline(pipelineId: string) {
-  await db.delete(pipelines).where(eq(pipelines.id, pipelineId));
-}
+};
 
-export async function getPipelineBySourceID(sourceId: string) {
+export const deletePipeline = async (pipelineId: string) => {
+  await db.delete(pipelines).where(eq(pipelines.id, pipelineId));
+};
+
+export const getPipelineBySourceID = async (sourceId: string) => {
   const [result] = await db
     .select()
     .from(pipelines)
     .where(eq(pipelines.sourceId, sourceId));
   return result;
-}
+};
 
-export async function updatePipelineStatus(
+export const updatePipelineStatus = async (
   pipelineId: string,
   pipeline: Pipeline,
-) {
+) => {
   await db.update(pipelines).set(pipeline).where(eq(pipelines.id, pipelineId));
-}
+};

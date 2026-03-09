@@ -7,12 +7,12 @@ import {
 } from "../lib/classes/errors.js";
 import z from "zod";
 
-export function errorHandlerMiddleware(
+export const errorHandlerMiddleware = (
   err: Error,
   req: Request,
   res: Response,
   next: NextFunction,
-) {
+) => {
   if (err instanceof BadRequestError) {
     return res.status(400).send({ error: err.message });
   }
@@ -38,4 +38,4 @@ export function errorHandlerMiddleware(
   return res.status(500).send({
     error: "Internal Server Error",
   });
-}
+};

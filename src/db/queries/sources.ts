@@ -2,23 +2,23 @@ import { eq } from "drizzle-orm";
 import { db } from "../index.js";
 import { Source, sources } from "../schema.js";
 
-export async function createSource(source: Source) {
+export const createSource = async (source: Source) => {
   const [result] = await db.insert(sources).values(source).returning();
   return result;
-}
+};
 
-export async function getSourceByID(sourceId: string) {
+export const getSourceByID = async (sourceId: string) => {
   const [result] = await db
     .select()
     .from(sources)
     .where(eq(sources.id, sourceId));
   return result;
-}
+};
 
-export async function getSourceByURL(sourceURL: string) {
+export const getSourceByURL = async (sourceURL: string) => {
   const [result] = await db
     .select()
     .from(sources)
     .where(eq(sources.url, sourceURL));
   return result;
-}
+};
