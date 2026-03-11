@@ -15,7 +15,8 @@
     "dev:client": "cd client && npm run dev",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
-    "test": "vitest --run"
+    "test:worker": "cd worker && npm run test",
+    "test:server": "cd server && npm run test"
   },
   "dependencies": {
     "dotenv": "^17.3.1",

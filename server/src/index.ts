@@ -8,7 +8,7 @@ import { errorHandlerMiddleware } from "./middlewares/handleErrors.js";
 
 const app = express();
 app.use(express.json());
-const PORT = 4000;
+const PORT = 8080;
 
 app.use("/app", express.static("./src/app"));
 

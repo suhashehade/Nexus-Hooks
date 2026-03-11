@@ -15,9 +15,9 @@ export const webhookIngestionHandler = async (
 ) => {
   try {
     const { event, payload } = req.body;
-    if (!event || !payload) {
-      throw new BadRequestError("Both event and payload are required");
-    }
+    // if (!event || !payload) {
+    //   throw new BadRequestError("Both event and payload are required");
+    // }
     if (event !== "order-complete") {
       throw new ForbiddenError(
         "This operation is not allowed, the order is not completed",
@@ -32,7 +32,7 @@ export const webhookIngestionHandler = async (
 
     const source = await getSourceByURL(fullURL);
     if (!source) {
-      throw new NotFoundError("Source not found");
+      throw new NotFoundError(`Source not found: ${fullURL}`);
     }
     const pipeline = await getPipelineBySourceID(source.id);
 

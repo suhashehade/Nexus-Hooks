@@ -5,3 +5,8 @@ export const createJob = async (job: Job) => {
   const [result] = await db.insert(jobs).values(job).returning();
   return result;
 };
+
+// export const getJob = async (job: Job) => {
+//   const [result] = await db.insert(jobs).values(job).returning();
+//   return result;
+// };

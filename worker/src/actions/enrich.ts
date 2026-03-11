@@ -1,24 +1,66 @@
-// Enrich (إضافة بيانات ذكية)
+import { ActionResult } from "../lib/types/action";
+import { Order } from "../lib/types/job";
 
-// إضافة معلومات قيمة أو تنبؤية للطلب.
+export async function enrich(order: Order): Promise<ActionResult> {
+  try {
+    if (!order.subscriber) {
+      return {
+        status: "skipped",
+        reason: "no subscriber",
+        order,
+      };
+    }
 
-// مثال: تقدير تكلفة الشحن، اقتراح منتجات إضافية، إضافة حالة العميل (VIP، متكرر…).
-// shipping:
-// اقتراحات enrichment:
+    // accounting enrichment
+    if (order.subscriber === "accounting") {
+      if (order.totalPrice == null) {
+        return {
+          status: "skipped",
+          reason: "missing totalPrice",
+          order,
+        };
+      }
 
-// 1️⃣ geolocation
+      const TAX = 0.17;
 
-// تحويل العنوان إلى:
+      return {
+        status: "success",
+        order: {
+          ...order,
+          totalPriceWithTax: Number((order.totalPrice * (1 + TAX)).toFixed(2)),
+        },
+      };
+    }
 
-// latitude
-// longitude
+    // shipping enrichment
+    if (order.subscriber === "shipping") {
+      const city = order.customer?.city?.toLowerCase();
 
-// 2️⃣ delivery zone
+      let zone = "unknown";
 
-// مثلاً:
+      if (city === "nablus") zone = "north";
+      else if (city === "ramallah") zone = "center";
+      else if (city === "hebron") zone = "south";
 
-// Nablus → zone A
-// Ramallah → zone B
+      return {
+        status: "success",
+        order: {
+          ...order,
+          shippingZone: zone,
+        },
+      };
+    }
 
-// accounting:
-// add tax
+    return {
+      status: "skipped",
+      reason: "unknown subscriber",
+      order,
+    };
+  } catch {
+    return {
+      status: "failed",
+      reason: "enrich error",
+      order,
+    };
+  }
+}

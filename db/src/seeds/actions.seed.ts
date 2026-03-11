@@ -4,21 +4,12 @@ import { randomUUID } from "crypto";
 export async function seedActions() {
   const actionsList = [
     {
-      type: "rateLimit",
-      order: 1,
-      editable: false,
-      required: false,
-      description:
-        "Skip scamed orders '1+ order by the same customer per minute'",
-      config: { limitPerMinute: 1 },
-    },
-    {
       type: "filterStructure",
-      order: 2,
+      order: 1,
       editable: false,
       required: true,
       description:
-        "Skip orders that haven't phone number, city, price, items list, longitude, or latitude",
+        "Skip orders that haven't phone number, longitude, latitude or city for the customer, items list and each item's price, or the total price",
       config: {
         requiredFields: [
           "phoneNumber",
@@ -26,6 +17,7 @@ export async function seedActions() {
           "longitude",
           "latitude",
           "price",
+          "totalPrice",
           "items",
         ],
         requireItems: true,
@@ -33,26 +25,26 @@ export async function seedActions() {
     },
     {
       type: "dedup",
-      order: 3,
+      order: 2,
       editable: false,
       required: false,
       description: "Merge order items that have the same item id and item name",
       config: {
-        by: ["itemId", "name"],
+        by: ["id", "name"],
         strategy: "merge",
       },
     },
     {
       type: "filter",
-      order: 4,
+      order: 3,
       editable: true,
       required: true,
       description: "Filter order by price = 10",
-      config: { minPrice: 20 },
+      config: { minPrice: 10 },
     },
     {
       type: "normalize",
-      order: 5,
+      order: 4,
       editable: true,
       required: false,
       description:
@@ -61,7 +53,7 @@ export async function seedActions() {
     },
     {
       type: "validate",
-      order: 6,
+      order: 5,
       editable: false,
       required: true,
       description: "Check the total price is calculated correctly",
@@ -69,7 +61,7 @@ export async function seedActions() {
     },
     {
       type: "labeling",
-      order: 7,
+      order: 6,
       editable: false,
       required: true,
       description: "Add label to the order by subscriber name",
@@ -77,7 +69,7 @@ export async function seedActions() {
     },
     {
       type: "transform",
-      order: 8,
+      order: 7,
       editable: false,
       required: true,
       description: "Remove unnecessary fields per subscriber need",
@@ -85,7 +77,7 @@ export async function seedActions() {
     },
     {
       type: "enrich",
-      order: 9,
+      order: 8,
       editable: false,
       required: true,
       description: "Add additional fields per subscriber need",
@@ -96,7 +88,7 @@ export async function seedActions() {
     },
     {
       type: "routing",
-      order: 10,
+      order: 9,
       editable: false,
       required: true,
       description: "Send the order for the subscribers",
