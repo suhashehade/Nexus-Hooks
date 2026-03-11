@@ -20,7 +20,7 @@ services:
     volumes:
       - ./db/dist:/app/db/dist
     ports:
-      - "8080:4000"
+      - "4000:4000"
     depends_on:
       - db
     environment:
