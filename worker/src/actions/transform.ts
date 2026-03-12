@@ -1,7 +1,12 @@
-import { ActionResult } from "../lib/types/action";
+import { Action, ActionResult } from "../lib/types/action";
 import { Order } from "../lib/types/job";
 
-export async function transform(order: Order): Promise<ActionResult> {
+export async function transform(
+  order: Order,
+  pipelineId: string,
+  jobId: string,
+  action: Action,
+): Promise<ActionResult> {
   try {
     if (!order.subscriber) {
       return {
@@ -11,7 +16,7 @@ export async function transform(order: Order): Promise<ActionResult> {
       };
     }
 
-    if (order.subscriber === "accounting") {
+    if (order.subscriber.name.toLocaleLowerCase() === "accounting") {
       return {
         status: "success",
         order: {
@@ -25,7 +30,7 @@ export async function transform(order: Order): Promise<ActionResult> {
       };
     }
 
-    if (order.subscriber === "shipping") {
+    if (order.subscriber.name.toLocaleLowerCase() === "shipping") {
       return {
         status: "success",
         order: {

@@ -82,6 +82,7 @@ export const getPipelineByIDHandler = async (
       name: pipeline.name,
       source: pipeline.source,
       subscribers: pipeline.subscribers,
+      actions: pipeline.actions,
     });
   } catch (error: any) {
     next(error);

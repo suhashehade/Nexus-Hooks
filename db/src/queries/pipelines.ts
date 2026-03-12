@@ -54,7 +54,9 @@ export const getPipelines = async () => {
     )
 
     .leftJoin(pipelines_actions, eq(pipelines.id, pipelines_actions.pipelineId))
-    .leftJoin(actions, eq(pipelines_actions.actionId, actions.id));
+    .leftJoin(actions, eq(pipelines_actions.actionId, actions.id))
+
+    .orderBy(pipelines.id, actions.order);
 
   if (rows.length === 0) return [];
 
@@ -107,7 +109,7 @@ export const getPipelines = async () => {
 
   return Array.from(pipelinesMap.values()).map((pipeline) => ({
     ...pipeline,
-    actions: pipeline.actions.sort((a: Action, b: Action) => a.order - b.order),
+    actions: pipeline.actions,
   }));
 };
 
@@ -136,7 +138,6 @@ export const getPipelineByID = async (pipelineId: string) => {
     })
     .from(pipelines)
     .innerJoin(sources, eq(pipelines.sourceId, sources.id))
-
     .leftJoin(
       pipelines_subscribers,
       eq(pipelines.id, pipelines_subscribers.pipelineId),
@@ -145,64 +146,61 @@ export const getPipelineByID = async (pipelineId: string) => {
       subscribers,
       eq(pipelines_subscribers.subscriberId, subscribers.id),
     )
-
     .leftJoin(pipelines_actions, eq(pipelines.id, pipelines_actions.pipelineId))
     .leftJoin(actions, eq(pipelines_actions.actionId, actions.id))
-
-    .where(eq(pipelines.id, pipelineId));
+    .where(eq(pipelines.id, pipelineId))
+    .orderBy(actions.order);
 
   if (rows.length === 0) return null;
 
-  const pipeline: {
-    id: string;
-    name: string;
-    source: Source;
-    subscribers: SubScriber[];
-    actions: Action[];
-  } = {
-    id: rows[0].pipelineId,
-    name: rows[0].pipelineName,
-    source: {
-      id: rows[0].sourceId,
-      name: rows[0].sourceName,
-      url: rows[0].sourceUrl,
-      address: rows[0].sourceAddress,
-    },
-    subscribers: [],
-    actions: [],
-  };
-
+  // نسخ نفس منطق getPipelines لكن لواحد فقط
+  const pipelineMap = new Map<string, any>();
   for (const row of rows) {
+    if (!pipelineMap.has(row.pipelineId)) {
+      pipelineMap.set(row.pipelineId, {
+        id: row.pipelineId,
+        name: row.pipelineName,
+        source: {
+          id: row.sourceId,
+          name: row.sourceName,
+          url: row.sourceUrl,
+          address: row.sourceAddress,
+        },
+        subscribers: [],
+        actions: [],
+      });
+    }
+
+    const pipeline = pipelineMap.get(row.pipelineId);
+
     if (
       row.subscriberId &&
-      !pipeline.subscribers.some((s) => s.id === row.subscriberId)
+      !pipeline.subscribers.some((s: any) => s.id === row.subscriberId)
     ) {
       pipeline.subscribers.push({
         id: row.subscriberId,
-        name: row.subscriberName!,
-        url: row.subscriberUrl!,
+        name: row.subscriberName,
+        url: row.subscriberUrl,
       });
     }
 
     if (
       row.actionId &&
-      !pipeline.actions.some((a: Action) => a.id === row.actionId)
+      !pipeline.actions.some((a: any) => a.id === row.actionId)
     ) {
       pipeline.actions.push({
         id: row.actionId,
-        type: row.actionName!,
+        name: row.actionName,
         editable: row.actionEditable,
         required: row.actionRequired,
-        description: row.actionDescription!,
-        order: row.actionOrder!,
+        description: row.actionDescription,
+        order: row.actionOrder,
         config: row.actionConfig,
       });
     }
   }
 
-  pipeline.actions.sort((a: Action, b: Action) => a.order - b.order);
-
-  return pipeline;
+  return pipelineMap.get(pipelineId);
 };
 
 export const deletePipeline = async (pipelineId: string) => {

@@ -1,13 +1,14 @@
-import { ActionResult } from "../lib/types/action";
+import { updateJobStatus } from "db";
+import { Action, ActionResult } from "../lib/types/action";
 import { Order } from "../lib/types/job";
+import axios from "axios";
 
-async function mockWebhookCall(subscriber: string, order: Order) {
-  // نقدر نستبدلها لاحقًا بـ actual HTTP request
-  console.log(`Sending order ${order.id} to ${subscriber} webhook`);
-  return true;
-}
-
-export async function route(order: Order): Promise<ActionResult> {
+export async function route(
+  order: Order,
+  pipelineId: string,
+  jobId: string,
+  action: Action,
+): Promise<ActionResult> {
   try {
     if (!order.subscriber) {
       return {
@@ -18,25 +19,25 @@ export async function route(order: Order): Promise<ActionResult> {
     }
 
     // إرسال لل subscriber
-    const success = await mockWebhookCall(order.subscriber, order);
+    const response = await axios.post(order.subscriber.url, order);
 
-    if (!success) {
+    if (response.status !== 200) {
+      // await updateJobStatus(jobId, "failed");
       return {
         status: "failed",
         reason: `Failed sending to ${order.subscriber}`,
-        order,
       };
     }
-
+    // await updateJobStatus(jobId, "completed");
     return {
       status: "success",
       order,
     };
   } catch (err) {
+    // await updateJobStatus(jobId, "failed");
     return {
       status: "failed",
       reason: "route error",
-      order,
     };
   }
 }

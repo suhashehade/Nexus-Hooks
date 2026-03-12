@@ -72,9 +72,10 @@ export const jobs = pgTable("jobs", {
     .notNull()
     .references(() => pipelines.id, { onDelete: "cascade" }),
   payload: jsonb("payload").notNull(),
+  name: varchar("name").notNull(),
   status: varchar("status").notNull().default("pending"), // pending / processing / completed / failed
   priority: integer("priority").default(0),
-  attempts: integer("attempts").default(0),
+  attempts: integer("attempts").default(1),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   processedAt: timestamp("processed_at")
     .notNull()
@@ -90,8 +91,8 @@ export const delivery_attempts = pgTable("delivery_attempts", {
   subscriberId: uuid("subscriber_id")
     .notNull()
     .references(() => subscribers.id, { onDelete: "cascade" }),
-  status: varchar("status").notNull(), // success / failed
-  attempt: integer("attempt").default(0),
+  status: varchar("status").notNull().default("pending"), // success / failed
+  attempt: integer("attempt").default(1),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

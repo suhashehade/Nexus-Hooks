@@ -1,7 +1,12 @@
-import { ActionResult } from "../lib/types/action";
-import { Order } from "../lib/types/job";
+import { Action, ActionResult } from "../lib/types/action.js";
+import { Order } from "../lib/types/job.js";
 
-export async function enrich(order: Order): Promise<ActionResult> {
+export async function enrich(
+  order: Order,
+  pipelineId: string,
+  jobId: string,
+  action: Action,
+): Promise<ActionResult> {
   try {
     if (!order.subscriber) {
       return {
@@ -11,8 +16,7 @@ export async function enrich(order: Order): Promise<ActionResult> {
       };
     }
 
-    // accounting enrichment
-    if (order.subscriber === "accounting") {
+    if (order.subscriber.name.toLocaleLowerCase() === "accounting") {
       if (order.totalPrice == null) {
         return {
           status: "skipped",
@@ -32,8 +36,7 @@ export async function enrich(order: Order): Promise<ActionResult> {
       };
     }
 
-    // shipping enrichment
-    if (order.subscriber === "shipping") {
+    if (order.subscriber.name.toLocaleLowerCase() === "shipping") {
       const city = order.customer?.city?.toLowerCase();
 
       let zone = "unknown";

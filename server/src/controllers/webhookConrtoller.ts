@@ -7,6 +7,7 @@ import {
 } from "../lib/classes/errors.js";
 import { getPipelineBySourceID } from "db";
 import { createJob } from "db";
+import { generateJobName } from "../utils/generateJobName.js";
 
 export const webhookIngestionHandler = async (
   req: Request,
@@ -15,9 +16,6 @@ export const webhookIngestionHandler = async (
 ) => {
   try {
     const { event, payload } = req.body;
-    // if (!event || !payload) {
-    //   throw new BadRequestError("Both event and payload are required");
-    // }
     if (event !== "order-complete") {
       throw new ForbiddenError(
         "This operation is not allowed, the order is not completed",
@@ -46,6 +44,7 @@ export const webhookIngestionHandler = async (
     const newJob = {
       pipelineId: pipeline.id,
       payload,
+      name: generateJobName(),
     };
     const job = await createJob(newJob);
     res.status(202).json({ message: "The job is accepted", job, code: 202 });
