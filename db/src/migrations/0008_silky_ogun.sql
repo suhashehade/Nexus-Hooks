@@ -1,0 +1,1 @@
+ALTER TABLE "pipelines" ADD CONSTRAINT "pipelines_source_id_unique" UNIQUE("source_id");

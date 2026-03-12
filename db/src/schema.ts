@@ -17,6 +17,7 @@ export const pipelines = pgTable("pipelines", {
     .$onUpdate(() => new Date()),
   sourceId: uuid("source_id")
     .notNull()
+    .unique()
     .references(() => sources.id, { onDelete: "cascade" }),
   name: varchar("name", { length: 256 }).notNull(),
   secret: varchar("secret").notNull(),
