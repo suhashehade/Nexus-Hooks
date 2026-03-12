@@ -1,69 +1,56 @@
 import { describe, it, expect } from "vitest";
 import { fork } from "../actions/fork";
+import { Order, Subscriber } from "../lib/types/job";
+import { Action } from "../lib/types/action";
 
 describe("fork", () => {
-  it("should create one order per subscriber", async () => {
-    const order = {
-      id: 1,
-      totalPrice: 100,
-    };
+  const mockOrder: Order = {
+    id: 1,
+    items: [{ id: 1, name: "tuna", price: 12 }],
+    totalPrice: 12,
+    currency: "ILS",
+    customer: { id: 1, name: "Ahmed", city: "Nablus" },
+  };
 
-    const config = {
-      subscribers: ["accounting", "shipping"],
-    };
+  const subscribers: Subscriber[] = [
+    { id: "sub1", name: "Accounting", url: "http://accounting" },
+    { id: "sub2", name: "Shipping", url: "http://shipping" },
+  ];
 
-    const result = await fork(order, config);
+  const action: Action = {
+    name: "fork",
+    config: {},
+  };
+
+  it("should fork the order for each subscriber", async () => {
+    const result = await fork(
+      mockOrder,
+      { subscribers },
+      "pipeline1",
+      "job1",
+      action,
+    );
 
     expect(result.status).toBe("success");
-    expect(result.orders).toHaveLength(2);
-
-    expect(result.orders[0].subscriber).toBe("accounting");
-    expect(result.orders[1].subscriber).toBe("shipping");
+    expect(result.orders).toHaveLength(subscribers.length);
+    expect(result.orders[0].subscriber).toEqual(subscribers[0]);
+    expect(result.orders[1].subscriber).toEqual(subscribers[1]);
+    // Ensure original order is not mutated
+    expect(mockOrder.subscriber).toBeUndefined();
   });
 
-  it("should clone the order for each subscriber", async () => {
-    const order = {
-      id: 1,
-      totalPrice: 100,
-    };
-
-    const config = {
-      subscribers: ["accounting", "shipping"],
-    };
-
-    const result = await fork(order, config);
-
-    expect(result.orders[0].id).toBe(1);
-    expect(result.orders[1].id).toBe(1);
-  });
-
-  it("should skip if no subscribers", async () => {
-    const order = {
-      id: 1,
-    };
-
-    const config = {
-      subscribers: [],
-    };
-
-    const result = await fork(order, config);
+  it("should skip if no subscribers provided", async () => {
+    const result = await fork(
+      mockOrder,
+      { subscribers: [] },
+      "pipeline1",
+      "job1",
+      action,
+    );
 
     expect(result.status).toBe("skipped");
+    expect(result.reason).toBe("no subscribers");
     expect(result.orders).toHaveLength(1);
-    expect(result.orders[0].id).toBe(1);
-  });
-
-  it("each order should have only one subscriber", async () => {
-    const order = {
-      id: 1,
-    };
-
-    const config = {
-      subscribers: ["accounting", "shipping"],
-    };
-
-    const result = await fork(order, config);
-
-    expect(result.orders[0].subscriber).not.toBe(result.orders[1].subscriber);
+    expect(result.orders[0]).toEqual(mockOrder);
   });
 });

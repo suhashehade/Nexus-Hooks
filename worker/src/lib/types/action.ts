@@ -1,5 +1,9 @@
 import { Order } from "./job";
 
+export type Action = {
+  config: any;
+  name: string;
+};
 export type ActionResult = {
   status: "skipped" | "success" | "failed";
   error?: string;

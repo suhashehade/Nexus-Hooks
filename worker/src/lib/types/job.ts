@@ -1,4 +1,4 @@
-type OrderItem = {
+export type OrderItem = {
   id?: number;
   name?: string;
   price?: number;
@@ -15,13 +15,23 @@ type Customer = {
 };
 
 export type Order = {
-  id?: number;
+  id?: number | string;
   items?: OrderItem[];
   totalPrice?: number;
   currency?: string;
   customer?: Customer;
-  subscriber?: string;
+  subscriber?: Subscriber;
   extraField?: unknown;
   totalPriceWithTax?: number;
   shippingZone?: string;
+};
+
+export type Subscriber = { id: string; name: string; url: string };
+
+export type Job = {
+  id: string;
+  pipelineId: string | number;
+  payload: Order;
+  status: string;
+  attempts: number;
 };

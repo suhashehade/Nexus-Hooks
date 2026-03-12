@@ -11,7 +11,7 @@ export async function seedSubscribers() {
   await createSubscriber({
     id: randomUUID(),
     name: "Shipping",
-    url: "http://localhost:8081/api/subscribers/shipping",
+    url: "http://localhost:8082/api/subscribers/shipping",
   });
 
   console.log("✅ subscribers seeded");

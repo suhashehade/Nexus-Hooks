@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { route } from "../actions/routing";
+import { Action } from "../lib/types/action";
 
 // نعمل spy على console.log بدل إرسال فعلي
 vi.spyOn(console, "log").mockImplementation(() => {});
@@ -8,10 +9,17 @@ describe("route", () => {
   it("should send order to accounting subscriber", async () => {
     const order = {
       id: 1,
-      subscriber: "accounting",
+      subscriber: {
+        id: "1",
+        name: "Accounting",
+        url: "http://localhost:8081/subscribers/accounting",
+      },
     };
-
-    const result = await route(order);
+    const action: Action = {
+      name: "route",
+      config: {},
+    };
+    const result = await route(order, "pipeline1", "job1", action);
 
     expect(result.status).toBe("success");
   });
@@ -20,8 +28,11 @@ describe("route", () => {
     const order = {
       id: 1,
     };
-
-    const result = await route(order);
+    const action: Action = {
+      name: "route",
+      config: {},
+    };
+    const result = await route(order, "pipeline1", "job1", action);
 
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("no subscriber");
@@ -31,15 +42,22 @@ describe("route", () => {
     // نعمل mock للwebhook ليرجع false
     const order = {
       id: 1,
-      subscriber: "shipping",
+      subscriber: {
+        id: "1",
+        name: "Accounting",
+        url: "http://localhost:8081/subscribers/accounting",
+      },
     };
-
+    const action: Action = {
+      name: "route",
+      config: {},
+    };
     const original = vi.spyOn(global.console, "log");
     vi.mocked(original).mockImplementationOnce(() => {
       throw new Error("fail call");
     });
 
-    const result = await route(order);
+    const result = await route(order, "pipeline1", "job1", action);
 
     expect(result.status).toBe("failed");
     expect(result.reason).toBe("route error");

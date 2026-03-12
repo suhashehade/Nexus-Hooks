@@ -10,3 +10,5 @@ export * from "./queries/pipelines.js";
 export * from "./queries/pipelinesSubscribers.js";
 export * from "./queries/sources.js";
 export * from "./queries/subscribers.js";
+export * from "./queries/deliveryAttempts.js";
+export * from "./schema.js";
