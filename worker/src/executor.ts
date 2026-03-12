@@ -83,14 +83,6 @@ export const runJob = async (job: Job, pipeline: any) => {
           }),
         );
         break;
-
-      // case "route":
-      //   await Promise.all(
-      //     orders.map(
-      //       async (order) => await route(order, pipeline.id, job.id!, action),
-      //     ),
-      //   );
-      //   break;
     }
   }
   console.log("end");
