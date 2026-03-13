@@ -6,9 +6,19 @@ export declare const createJob: (job: Job) => Promise<{
     pipelineId: string;
     payload: unknown;
     status: string;
-    priority: number | null;
-    attempts: number | null;
-    processedAt: Date;
+    processedAt: Date | null;
+    finishedAt: Date | null;
 }>;
-export declare const getJob: () => Promise<Job | null>;
+export declare const getPendingJob: () => Promise<Job | null>;
+export declare const getJobDetails: (jobId: string) => Promise<any>;
+export declare const getJobsByPipelineId: (pipelineId: string) => Promise<{
+    id: string;
+    pipelineId: string;
+    payload: unknown;
+    name: string;
+    status: string;
+    createdAt: Date;
+    processedAt: Date | null;
+    finishedAt: Date | null;
+}[]>;
 export declare const updateJobStatus: (jobId: string, status: string) => Promise<void>;

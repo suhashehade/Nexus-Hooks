@@ -1,27 +1,32 @@
-import { and, asc, desc, eq, lt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, lt, or, sql } from "drizzle-orm";
 import { db } from "../index.js";
-import { Job, jobs } from "../schema.js";
+import {
+  delivery_attempts,
+  Job,
+  jobs,
+  SubScriber,
+  subscribers,
+} from "../schema.js";
 
 export const createJob = async (job: Job) => {
   const [result] = await db.insert(jobs).values(job).returning();
   return result;
 };
 
-export const getJob = async (): Promise<Job | null> => {
+export const getPendingJob = async (): Promise<Job | null> => {
   return await db.transaction(async (tx) => {
     const [job] = await tx.execute<Job>(sql`
       SELECT 
         id,
         payload,
         status,
-        priority,
-        attempts,
         created_at AS "createdAt",
-        processed_at AS "processedAt",
+        processed_at AS processedAt,
+        finished_at AS finishedAt,
         pipeline_id AS "pipelineId"
       FROM jobs
-      WHERE status = 'pending' AND attempts < 5
-      ORDER BY priority DESC, created_at ASC
+      WHERE status = 'pending' 
+      ORDER BY created_at ASC
       FOR UPDATE SKIP LOCKED
       LIMIT 1
     `);
@@ -31,8 +36,7 @@ export const getJob = async (): Promise<Job | null> => {
     await tx.execute(sql`
       UPDATE jobs
       SET status = 'processing',
-          attempts = attempts + 1,
-          processed_at = now()
+        processed_at = now()
       WHERE id = ${job.id}
     `);
 
@@ -40,6 +44,86 @@ export const getJob = async (): Promise<Job | null> => {
   });
 };
 
+export const getJobDetails = async (jobId: string) => {
+  const rows = await db
+    .select({
+      jobId: jobs.id,
+      jobName: jobs.name,
+      status: jobs.status,
+      createdAt: jobs.createdAt,
+      processedAt: jobs.processedAt,
+      finishedAt: jobs.finishedAt,
+
+      attemptId: delivery_attempts.id,
+      attempt: delivery_attempts.attempt,
+      deliveryStatus: delivery_attempts.status,
+      attemptCreatedAt: delivery_attempts.createdAt,
+
+      subscriberId: subscribers.id,
+      subscriberName: subscribers.name,
+    })
+    .from(jobs)
+    .leftJoin(delivery_attempts, eq(delivery_attempts.jobId, jobs.id))
+    .leftJoin(subscribers, eq(subscribers.id, delivery_attempts.subscriberId))
+    .where(eq(jobs.id, jobId));
+  const jobMap = new Map<string, any>();
+  for (const row of rows) {
+    if (!jobMap.has(row.jobId)) {
+      jobMap.set(row.jobId, {
+        id: rows[0].jobId,
+        name: rows[0].jobName,
+        status: rows[0].status,
+
+        history: [
+          { status: "pending", time: rows[0].createdAt },
+          { status: "processing", time: rows[0].processedAt },
+          { status: rows[0].status, time: rows[0].finishedAt },
+        ],
+
+        subscribers: [],
+        deliveryAttempts: [],
+      });
+    }
+
+    const job = jobMap.get(row.jobId);
+
+    if (
+      row.subscriberId &&
+      !job.subscribers.some((s: any) => s.id === row.subscriberId)
+    ) {
+      job.subscribers.push({
+        id: row.subscriberId,
+        name: row.subscriberName,
+      });
+    }
+
+    if (
+      row.attemptId &&
+      !job.deliveryAttempts.some((a: any) => a.id === row.attemptId)
+    ) {
+      job.deliveryAttempts.push({
+        subscriber: row.subscriberName,
+        attempt: row.attempt,
+        status: row.deliveryStatus,
+        time: row.attemptCreatedAt,
+      });
+    }
+  }
+
+  return jobMap.get(jobId);
+};
+
+export const getJobsByPipelineId = async (pipelineId: string) => {
+  const result = await db
+    .select()
+    .from(jobs)
+    .where(eq(jobs.pipelineId, pipelineId));
+  return result;
+};
+
 export const updateJobStatus = async (jobId: string, status: string) => {
-  await db.update(jobs).set({ status: status }).where(eq(jobs.id, jobId));
+  await db
+    .update(jobs)
+    .set({ status: status, finishedAt: new Date() })
+    .where(eq(jobs.id, jobId));
 };

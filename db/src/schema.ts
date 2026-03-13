@@ -73,13 +73,9 @@ export const jobs = pgTable("jobs", {
   payload: jsonb("payload").notNull(),
   name: varchar("name").notNull(),
   status: varchar("status").notNull().default("pending"), // pending / processing / completed / failed
-  priority: integer("priority").default(0),
-  attempts: integer("attempts").default(1),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  processedAt: timestamp("processed_at")
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
+  processedAt: timestamp("processed_at"),
+  finishedAt: timestamp("finished_at"),
 });
 
 export const delivery_attempts = pgTable("delivery_attempts", {

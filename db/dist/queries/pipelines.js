@@ -101,7 +101,6 @@ export const getPipelineByID = async (pipelineId) => {
         .orderBy(actions.order);
     if (rows.length === 0)
         return null;
-    // نسخ نفس منطق getPipelines لكن لواحد فقط
     const pipelineMap = new Map();
     for (const row of rows) {
         if (!pipelineMap.has(row.pipelineId)) {

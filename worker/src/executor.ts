@@ -4,7 +4,6 @@ import { fork } from "./actions/fork.js";
 import { transform } from "./actions/transform.js";
 import { enrich } from "./actions/enrich.js";
 import { recalculate } from "./actions/recalculate.js";
-import { route } from "./actions/routing.js";
 import { Order } from "./lib/types/job.js";
 import { Job } from "db";
 import { filter } from "./actions/filter.js";
@@ -16,7 +15,7 @@ export const runJob = async (job: Job, pipeline: any) => {
   for (const action of pipeline.actions) {
     console.log(`action type: ${action.name}`);
     switch (action.name) {
-      case "mergeDup": // action.config = { "by": "id" }
+      case "mergeDup":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
             const result = await mergeDup(order, pipeline.id, job.id!, action);
@@ -24,7 +23,7 @@ export const runJob = async (job: Job, pipeline: any) => {
           }),
         );
         break;
-      case "filter": //  "config": { "price": true, "minPrice": 20 }
+      case "filter":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
             const result = await filter(order, pipeline.id, job.id!, action);
@@ -33,7 +32,7 @@ export const runJob = async (job: Job, pipeline: any) => {
           }),
         );
         break;
-      case "normalize": // "config": { "phoneNumber": true, "prefixes": ['+972', '+970'] },
+      case "normalize":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
             const result = await normalize(order, pipeline.id, job.id!, action);
@@ -41,7 +40,7 @@ export const runJob = async (job: Job, pipeline: any) => {
           }),
         );
         break;
-      case "recalculate": // "config": { "totalPrice": true }
+      case "recalculate":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
             const result = await recalculate(

@@ -147,7 +147,6 @@ export const getPipelineByID = async (pipelineId: string) => {
 
   if (rows.length === 0) return null;
 
-  // نسخ نفس منطق getPipelines لكن لواحد فقط
   const pipelineMap = new Map<string, any>();
   for (const row of rows) {
     if (!pipelineMap.has(row.pipelineId)) {

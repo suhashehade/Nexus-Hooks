@@ -1,4 +1,4 @@
-import { getJob, getPipelineByID } from "db";
+import { getPendingJob, getPipelineByID } from "db";
 import { runJob } from "./executor.js";
 import axios from "axios";
 
@@ -6,9 +6,9 @@ async function runWorker() {
   const SERVER_INTERNAL_URL = "http://localhost:4000/internal/deliver";
   while (true) {
     try {
-      const job = await getJob();
+      const job = await getPendingJob();
       if (!job) {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 10000));
         continue;
       } else {
         console.log("Starting worker with mock job...");
