@@ -10,7 +10,7 @@ export declare const createPipeline: (pipeline: Pipeline) => Promise<{
 export declare const getPipelines: () => Promise<any[]>;
 export declare const getPipelineByID: (pipelineId: string) => Promise<any>;
 export declare const deletePipeline: (pipelineId: string) => Promise<void>;
-export declare const getPipelineBySourceID: (sourceId: string) => Promise<{
+export declare const getPipelineBySecret: (sectet: string) => Promise<{
     id: string;
     createdAt: Date;
     updatedAt: Date;

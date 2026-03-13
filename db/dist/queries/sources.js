@@ -12,10 +12,3 @@ export const getSourceByID = async (sourceId) => {
         .where(eq(sources.id, sourceId));
     return result;
 };
-export const getSourceByURL = async (sourceURL) => {
-    const [result] = await db
-        .select()
-        .from(sources)
-        .where(eq(sources.url, sourceURL));
-    return result;
-};

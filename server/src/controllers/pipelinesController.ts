@@ -10,6 +10,7 @@ import { NotFoundError } from "../lib/classes/errors.js";
 import { createPipelineSubscriber } from "db";
 import { createPipelineAction } from "db";
 import { generatePipelineSecret } from "../utils/generatePipelineSecret.js";
+import { generateRandomName } from "../utils/generateRandomName.js";
 
 export const addPipelineHandler = async (
   req: Request,
@@ -26,7 +27,7 @@ export const addPipelineHandler = async (
     const secret = generatePipelineSecret();
     const pipeline = await createPipeline({
       sourceId: req.body.sourceId,
-      name: req.body.name,
+      name: generateRandomName("pipeline"),
       secret,
     });
 
@@ -43,6 +44,7 @@ export const addPipelineHandler = async (
     res.status(201).json({
       id: pipeline.id,
       name: pipeline.name,
+      secret,
       source,
       subscribers: fullPipeline?.subscribers ?? [],
       actions: fullPipeline?.actions ?? [],

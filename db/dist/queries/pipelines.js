@@ -12,8 +12,6 @@ export const getPipelines = async () => {
         pipelineName: pipelines.name,
         sourceId: sources.id,
         sourceName: sources.name,
-        sourceUrl: sources.url,
-        sourceAddress: sources.address,
         subscriberId: subscribers.id,
         subscriberName: subscribers.name,
         subscriberUrl: subscribers.url,
@@ -43,8 +41,6 @@ export const getPipelines = async () => {
                 source: {
                     id: row.sourceId,
                     name: row.sourceName,
-                    url: row.sourceUrl,
-                    address: row.sourceAddress,
                 },
                 subscribers: [],
                 actions: [],
@@ -84,8 +80,6 @@ export const getPipelineByID = async (pipelineId) => {
         pipelineName: pipelines.name,
         sourceId: sources.id,
         sourceName: sources.name,
-        sourceUrl: sources.url,
-        sourceAddress: sources.address,
         subscriberId: subscribers.id,
         subscriberName: subscribers.name,
         subscriberUrl: subscribers.url,
@@ -117,8 +111,6 @@ export const getPipelineByID = async (pipelineId) => {
                 source: {
                     id: row.sourceId,
                     name: row.sourceName,
-                    url: row.sourceUrl,
-                    address: row.sourceAddress,
                 },
                 subscribers: [],
                 actions: [],
@@ -151,11 +143,11 @@ export const getPipelineByID = async (pipelineId) => {
 export const deletePipeline = async (pipelineId) => {
     await db.delete(pipelines).where(eq(pipelines.id, pipelineId));
 };
-export const getPipelineBySourceID = async (sourceId) => {
+export const getPipelineBySecret = async (sectet) => {
     const [result] = await db
         .select()
         .from(pipelines)
-        .where(eq(pipelines.sourceId, sourceId));
+        .where(eq(pipelines.secret, sectet));
     return result;
 };
 export const updatePipelineStatus = async (pipelineId, pipeline) => {

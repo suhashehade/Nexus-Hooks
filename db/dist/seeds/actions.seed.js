@@ -66,14 +66,6 @@ export async function seedActions() {
                 accounting: { addTax: true },
             },
         },
-        {
-            type: "route",
-            order: 8,
-            editable: false,
-            required: true,
-            description: "Send the order for the subscribers",
-            config: { method: "webhook" },
-        },
     ];
     for (const action of actionsList) {
         await createAction({

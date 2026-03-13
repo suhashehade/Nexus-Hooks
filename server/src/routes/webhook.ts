@@ -6,9 +6,9 @@ import { createWebhookSchema } from "../validation/webhook.schema.js";
 const router = Router();
 
 router.post(
-  "/sources/:sourceName",
+  "/",
   validate(createWebhookSchema, "body"),
   webhookIngestionHandler,
-); // :sourceId
+);
 
 export default router;

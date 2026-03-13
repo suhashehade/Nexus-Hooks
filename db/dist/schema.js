@@ -31,8 +31,6 @@ export const subscribers = pgTable("subscribers", {
 export const sources = pgTable("sources", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 256 }).notNull(),
-    address: varchar("address").notNull(),
-    url: varchar("url").notNull().unique(),
 });
 export const pipelines_subscribers = pgTable("pipelines_subscribers", {
     id: uuid("id").primaryKey().defaultRandom(),

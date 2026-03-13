@@ -26,8 +26,6 @@ export const getPipelines = async () => {
 
       sourceId: sources.id,
       sourceName: sources.name,
-      sourceUrl: sources.url,
-      sourceAddress: sources.address,
 
       subscriberId: subscribers.id,
       subscriberName: subscribers.name,
@@ -70,8 +68,6 @@ export const getPipelines = async () => {
         source: {
           id: row.sourceId,
           name: row.sourceName,
-          url: row.sourceUrl,
-          address: row.sourceAddress,
         },
         subscribers: [],
         actions: [],
@@ -121,8 +117,6 @@ export const getPipelineByID = async (pipelineId: string) => {
 
       sourceId: sources.id,
       sourceName: sources.name,
-      sourceUrl: sources.url,
-      sourceAddress: sources.address,
 
       subscriberId: subscribers.id,
       subscriberName: subscribers.name,
@@ -163,8 +157,6 @@ export const getPipelineByID = async (pipelineId: string) => {
         source: {
           id: row.sourceId,
           name: row.sourceName,
-          url: row.sourceUrl,
-          address: row.sourceAddress,
         },
         subscribers: [],
         actions: [],
@@ -207,11 +199,11 @@ export const deletePipeline = async (pipelineId: string) => {
   await db.delete(pipelines).where(eq(pipelines.id, pipelineId));
 };
 
-export const getPipelineBySourceID = async (sourceId: string) => {
+export const getPipelineBySecret = async (sectet: string) => {
   const [result] = await db
     .select()
     .from(pipelines)
-    .where(eq(pipelines.sourceId, sourceId));
+    .where(eq(pipelines.secret, sectet));
   return result;
 };
 
