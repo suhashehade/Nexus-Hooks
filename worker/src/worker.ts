@@ -3,7 +3,7 @@ import { runJob } from "./executor.js";
 import axios from "axios";
 
 async function runWorker() {
-  const SERVER_INTERNAL_URL = "http://localhost:4000/internal/deliver";
+  const SERVER_INTERNAL_URL = process.env.SERVER_URL || "http://localhost:4000/internal/deliver";
   while (true) {
     try {
       const job = await getQueuedJob();

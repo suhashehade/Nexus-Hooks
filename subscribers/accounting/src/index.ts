@@ -3,6 +3,15 @@ import express, { NextFunction, Request, Response } from "express";
 const app = express();
 app.use(express.json());
 const PORT = 5001;
+
+const checkHealth = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.status(200).json({ message: "hi, i'm accounting" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const handleMainJob = async (
   req: Request,
   res: Response,
@@ -16,6 +25,7 @@ const handleMainJob = async (
   }
 };
 app.use("/app", express.static("./src/app"));
+app.get("/", checkHealth);
 app.post("/api/subscribers/accounting", handleMainJob);
 
 app.listen(PORT, () => {

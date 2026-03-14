@@ -32,7 +32,7 @@ export const deliver = async (
 
     if (attempt < 5) {
       console.log(
-        `Remain ${5 - attempt}/5 attempts to deliver to ${order.subscriber.name}`,
+        `Remain ${5 - attempt}/5 attempts to deliver to ${order.subscriber.name}: ${order.subscriber.url} for job ${jobId}`,
       );
 
       await sleep(10000);

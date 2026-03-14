@@ -44,6 +44,7 @@ services:
       - migrate
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
+    restart: unless-stopped
 
   worker:
     build:
@@ -54,6 +55,7 @@ services:
       - server
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
+      SERVER_URL: http://server:4000/internal/deliver
 
   subscriber_accounting:
     build:

@@ -5,13 +5,13 @@ export async function seedSubscribers() {
   await createSubscriber({
     id: randomUUID(),
     name: "Accounting",
-    url: "http://localhost:8081/api/subscribers/accounting",
+    url: "http://subscriber_accounting:5001/api/subscribers/accounting",
   });
 
   await createSubscriber({
     id: randomUUID(),
-    name: "Shipping",
-    url: "http://localhost:8082/api/subscribers/shipping",
+    name: "Shipping", 
+    url: "http://subscriber_shipping:5002/api/subscribers/shipping",
   });
 
   console.log("✅ subscribers seeded");

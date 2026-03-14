@@ -6,7 +6,7 @@ export const healthHandler = async (
   next: NextFunction,
 ) => {
   try {
-    res.status(200).send({ message: "OK" });
+    res.status(200).json({ message: "OK" });
   } catch (error: any) {
     next(error);
   }
