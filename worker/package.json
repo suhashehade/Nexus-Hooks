@@ -17,5 +17,8 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "db": "file:../db",
+    "axios": "^1.13.6"
+  }
 }

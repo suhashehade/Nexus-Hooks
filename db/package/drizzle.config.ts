@@ -5,6 +5,6 @@ export default defineConfig({
   out: "./src/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: "postgres://postgres:postgres@localhost:5432/nexusdb?sslmode=disable",
+    url: "postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable",
   },
 });
