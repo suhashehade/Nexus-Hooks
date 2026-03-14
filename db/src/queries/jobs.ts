@@ -13,7 +13,7 @@ export const createJob = async (job: Job) => {
   return result;
 };
 
-export const getPendingJob = async (): Promise<Job | null> => {
+export const getQueuedJob = async (): Promise<Job | null> => {
   return await db.transaction(async (tx) => {
     const [job] = await tx.execute<Job>(sql`
       SELECT 
@@ -25,7 +25,7 @@ export const getPendingJob = async (): Promise<Job | null> => {
         finished_at AS finishedAt,
         pipeline_id AS "pipelineId"
       FROM jobs
-      WHERE status = 'pending' 
+      WHERE status = 'queued' 
       ORDER BY created_at ASC
       FOR UPDATE SKIP LOCKED
       LIMIT 1
@@ -75,7 +75,7 @@ export const getJobDetails = async (jobId: string) => {
         status: rows[0].status,
 
         history: [
-          { status: "pending", time: rows[0].createdAt },
+          { status: "queued", time: rows[0].createdAt },
           { status: "processing", time: rows[0].processedAt },
           { status: rows[0].status, time: rows[0].finishedAt },
         ],

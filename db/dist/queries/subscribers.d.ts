@@ -4,3 +4,13 @@ export declare const createSubscriber: (subscriber: SubScriber) => Promise<{
     name: string;
     url: string;
 }>;
+export declare const getSubscribers: () => Promise<{
+    id: string;
+    name: string;
+    url: string;
+}[]>;
+export declare const getSubscriber: () => Promise<{
+    id: string;
+    name: string;
+    url: string;
+}[]>;

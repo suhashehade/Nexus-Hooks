@@ -1,4 +1,4 @@
-import { getPendingJob, getPipelineByID } from "db";
+import { getPipelineByID, getQueuedJob } from "db";
 import { runJob } from "./executor.js";
 import axios from "axios";
 
@@ -6,7 +6,7 @@ async function runWorker() {
   const SERVER_INTERNAL_URL = "http://localhost:4000/internal/deliver";
   while (true) {
     try {
-      const job = await getPendingJob();
+      const job = await getQueuedJob();
       if (!job) {
         await new Promise((resolve) => setTimeout(resolve, 10000));
         continue;

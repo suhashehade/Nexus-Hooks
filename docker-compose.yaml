@@ -1,53 +1,73 @@
 version: "3.9"
 
 services:
-  db:
+  postgres:
     image: postgres:15
-    container_name: db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: nexusdb
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
     ports:
       - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "
+      npm run generate -w db &&
+      npm run migrate -w db &&
+      npm run seed -w db
+      "
+
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
 
   server:
-    build: ./server
-    container_name: server
-    volumes:
-      - ./db/dist:/app/db/dist
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     ports:
       - "4000:4000"
     depends_on:
-      - db
+      - migrate
     environment:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/nexusdb?sslmode=disable
-    command: npm run dev
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
 
   worker:
-    build: ./worker
-    container_name: worker
-    ports:
-      - "5000:5000"
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
     depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/nexusdb?sslmode=disable
-      QUEUE_NAME: jobs
-    command: npm run dev
-
-  client:
-    build: ./client
-    container_name: client
-    ports:
-      - "3000:3000"
-    depends_on:
+      - migrate
       - server
-      - worker
-    command: npm run dev
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
+
+  subscriber_accounting:
+    build:
+      context: .
+      dockerfile: subscribers/accounting/Dockerfile
+    ports:
+      - "5001:5001"
+
+  subscriber_shipping:
+    build:
+      context: .
+      dockerfile: subscribers/shipping/Dockerfile
+    ports:
+      - "5002:5002"
 
 volumes:
-  db-data:
+  postgres_data:

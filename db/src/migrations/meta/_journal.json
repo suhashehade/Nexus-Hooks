@@ -99,6 +99,13 @@
       "when": 1773430363996,
       "tag": "0013_curved_guardsmen",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1773498022558,
+      "tag": "0014_boring_hellcat",
+      "breakpoints": true
     }
   ]
 }

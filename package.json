@@ -23,8 +23,6 @@
     "dev:accounting": "npm run dev -w subscribers/accounting",
     "dev:shipping": "npm run dev -w subscribers/shipping",
     "dev:client": "npm run dev -w client",
-    "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate",
     "test:worker": "npm run test -w worker",
     "test:server": "npm run test -w server"
   },

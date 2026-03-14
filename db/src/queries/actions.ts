@@ -10,3 +10,8 @@ export const getActions = async () => {
   const result = await db.select().from(actions);
   return result;
 };
+
+export const getAction = async () => {
+  const result = await db.select().from(actions).limit(1);
+  return result;
+};

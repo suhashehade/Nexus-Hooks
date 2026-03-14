@@ -14,3 +14,13 @@ export const getSourceByID = async (sourceId: string) => {
     .where(eq(sources.id, sourceId));
   return result;
 };
+
+export const getSources = async () => {
+  const result = await db.select().from(sources);
+  return result;
+};
+
+export const getSource = async () => {
+  const result = await db.select().from(sources).limit(1);
+  return result;
+};

@@ -57,7 +57,7 @@ export const jobs = pgTable("jobs", {
         .references(() => pipelines.id, { onDelete: "cascade" }),
     payload: jsonb("payload").notNull(),
     name: varchar("name").notNull(),
-    status: varchar("status").notNull().default("pending"), // pending / processing / completed / failed
+    status: varchar("status").notNull().default("queued"), // queued / processing / completed / failed
     createdAt: timestamp("created_at").notNull().defaultNow(),
     processedAt: timestamp("processed_at"),
     finishedAt: timestamp("finished_at"),

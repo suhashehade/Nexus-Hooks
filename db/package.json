@@ -10,8 +10,8 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate",
+    "generate": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate",
     "dev": "npx tsc && node dist/index.js",
     "seed": "npx tsc && node dist/seeds/seed.js"
   },
