@@ -1,5 +1,13 @@
 {
   "name": "nexus",
+  "private": true,
+  "workspaces": [
+    "server",
+    "worker",
+    "db",
+    "subscribers/*",
+    "client"
+  ],
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
@@ -7,18 +15,18 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "migrate:db": "cd db && npm run migrate",
-    "generate:db": "cd db && npm run generate",
-    "seed:db": "cd db && npm run seed",
-    "dev:server": "cd server && npm run dev",
-    "dev:worker": "cd worker && npm run dev",
-    "dev:accounting": "cd subscribers/accounting && npm run dev",
-    "dev:shipping": "cd subscribers/shipping && npm run dev",
-    "dev:client": "cd client && npm run dev",
+    "migrate:db": "npm run migrate -w db",
+    "generate:db": "npm run generate -w db",
+    "seed:db": "npm run seed -w db",
+    "dev:server": "npm run dev -w server",
+    "dev:worker": "npm run dev -w worker",
+    "dev:accounting": "npm run dev -w subscribers/accounting",
+    "dev:shipping": "npm run dev -w subscribers/shipping",
+    "dev:client": "npm run dev -w client",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
-    "test:worker": "cd worker && npm run test",
-    "test:server": "cd server && npm run test"
+    "test:worker": "npm run test -w worker",
+    "test:server": "npm run test -w server"
   },
   "dependencies": {
     "axios": "^1.13.6",

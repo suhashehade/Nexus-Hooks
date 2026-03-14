@@ -1,6 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-
 import { getActions } from "db";
+import { NextFunction, Request, Response } from "express";
 
 export const getAllActionsHandler = async (
   req: Request,
