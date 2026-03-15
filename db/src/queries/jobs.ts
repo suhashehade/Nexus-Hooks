@@ -4,6 +4,7 @@ import {
   delivery_attempts,
   Job,
   jobs,
+  pipelines,
   SubScriber,
   subscribers,
 } from "../schema.js";
@@ -20,6 +21,7 @@ export const getQueuedJob = async (): Promise<Job | null> => {
         id,
         payload,
         status,
+        name,
         created_at AS "createdAt",
         processed_at AS processedAt,
         finished_at AS finishedAt,

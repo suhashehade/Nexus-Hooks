@@ -12,6 +12,7 @@ export const getQueuedJob = async () => {
         id,
         payload,
         status,
+        name,
         created_at AS "createdAt",
         processed_at AS processedAt,
         finished_at AS finishedAt,

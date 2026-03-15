@@ -7,6 +7,9 @@ import webhooksRoute from "./routes/webhook.js";
 import deliverRoute from "./routes/delivery.js";
 
 import { errorHandlerMiddleware } from "./middlewares/handleErrors.js";
+import { createLogger } from "./utils/logger.js";
+
+const logger = createLogger('server');
 
 const app = express();
 app.use(express.json());
@@ -24,5 +27,12 @@ app.use("/internal/deliver", deliverRoute);
 
 app.use(errorHandlerMiddleware);
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  logger.success(`🚀 Nexus Server started successfully`, { port: PORT });
+  logger.info(`📋 Available endpoints:`, {
+    health: `http://localhost:${PORT}/health`,
+    actions: `http://localhost:${PORT}/api/actions`,
+    jobs: `http://localhost:${PORT}/api/jobs`,
+    jobDetails: `http://localhost:${PORT}/api/jobs/details/{jobId}`,
+    webhooks: `http://localhost:${PORT}/api/nexus/webhooks`
+  });
 });
