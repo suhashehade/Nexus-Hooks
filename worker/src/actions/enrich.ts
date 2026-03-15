@@ -1,12 +1,7 @@
-import { Action, ActionResult } from "../lib/types/action.js";
+import { ActionResult } from "../lib/types/action.js";
 import { Order } from "../lib/types/job.js";
 
-export async function enrich(
-  order: Order,
-  pipelineId: string,
-  jobId: string,
-  action: Action,
-): Promise<ActionResult> {
+export async function enrich(order: Order): Promise<ActionResult> {
   try {
     if (!order.subscriber) {
       return {

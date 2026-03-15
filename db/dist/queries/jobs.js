@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "../index.js";
-import { delivery_attempts, jobs, subscribers, } from "../schema.js";
+import { delivery_attempts, jobs, subscribers } from "../schema.js";
 export const createJob = async (job) => {
     const [result] = await db.insert(jobs).values(job).returning();
     return result;

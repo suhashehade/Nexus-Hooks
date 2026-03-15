@@ -8,5 +8,4 @@ export declare const config: {
             migrationsFolder: string;
         };
     };
-    secret: string | undefined;
 };

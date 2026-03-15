@@ -11,7 +11,7 @@ describe("filter action", () => {
       config: { price: true, minPrice: 20 },
     };
 
-    const result = await filter(order, "pipeline1", "job1", action);
+    const result = await filter(order, action);
 
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("Order price 15 is less than minimum 20");
@@ -25,7 +25,7 @@ describe("filter action", () => {
       config: { price: true, minPrice: 10 },
     };
 
-    const result = await filter(order, "pipeline1", "job1", action);
+    const result = await filter(order, action);
 
     expect(result.status).toBe("success");
     expect(result.order).toEqual(order);

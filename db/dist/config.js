@@ -16,11 +16,11 @@ export const config = {
         url: process.env.DATABASE_URL,
         migrationConfig,
     },
-    secret: process.env.SECRET,
 };
-// Validate required environment variables
 if (!process.env.DATABASE_URL) {
     console.error("DATABASE_URL is not set. Please set up your database connection.");
     console.error("Create a .env file based on .env.example");
-    process.exit(1);
+    if (process.env.NODE_ENV !== "test") {
+        process.exit(1);
+    }
 }

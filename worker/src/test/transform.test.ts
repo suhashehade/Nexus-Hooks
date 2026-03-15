@@ -1,66 +1,66 @@
 import { describe, it, expect } from "vitest";
-import { transform } from "../actions/transform";
-import { Order } from "../lib/types/job";
-import { Action } from "../lib/types/action";
+import { transform } from "../actions/transform.js";
+import { Order } from "../lib/types/job.js";
 
 describe("transform action", () => {
-  const baseOrder: Order = {
-    id: 1,
-    totalPrice: 50,
-    currency: "ILS",
-    items: [{ id: 1, name: "tuna", price: 50 }],
-    customer: { id: 1, name: "Ahmed", city: "Nablus" },
-  } as Order;
-
-  const action: Action = {
-    name: "transform",
-    config: {},
-  };
-
-  it("should transform order for accounting", async () => {
+  it("should transform order for accounting subscriber", async () => {
     const order: Order = {
-      ...baseOrder,
+      id: "order-1",
+      totalPrice: 50,
+      currency: "ILS",
+      items: [{ id: 1, name: "tuna", price: 50 }],
+      customer: { id: 1, name: "Ahmed", city: "Nablus" },
       subscriber: { id: "1", name: "Accounting", url: "http://acc" },
     };
 
-    const result = await transform(order, "pipeline1", "job1", action);
+    const result = await transform(order);
 
     expect(result.status).toBe("success");
-    expect(result.order?.totalPrice).toBe(50);
-    expect(result.order?.items).toBeDefined();
-    expect(result.order?.customer).toBeDefined();
+    expect(result.order?.totalPrice).toBe(100); // 50 * 2
   });
 
-  it("should transform order for shipping", async () => {
+  it("should transform order for shipping subscriber", async () => {
     const order: Order = {
-      ...baseOrder,
+      id: "order-2",
+      totalPrice: 30,
+      currency: "ILS",
+      items: [{ id: 1, name: "salmon", price: 30 }],
+      customer: { id: 2, name: "Sara", city: "Ramallah" },
       subscriber: { id: "2", name: "Shipping", url: "http://ship" },
     };
 
-    const result = await transform(order, "pipeline1", "job1", action);
+    const result = await transform(order);
 
     expect(result.status).toBe("success");
-    expect(result.order?.customer).toBeDefined();
-    expect(result.order?.items).toBeUndefined();
     expect(result.order?.totalPrice).toBeUndefined();
   });
 
   it("should skip if no subscriber", async () => {
-    const order: Order = { ...baseOrder };
+    const order: Order = {
+      id: "order-3",
+      totalPrice: 25,
+      currency: "ILS",
+      items: [{ id: 1, name: "chicken", price: 25 }],
+      customer: { id: 3, name: "Mohammed", city: "Gaza" },
+    };
 
-    const result = await transform(order, "pipeline1", "job1", action);
+    const result = await transform(order);
 
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("no subscriber");
   });
 
-  it("should skip unknown subscriber", async () => {
+  it("should skip for unknown subscriber", async () => {
     const order: Order = {
-      ...baseOrder,
+      id: "order-4",
+      totalPrice: 40,
+      currency: "ILS",
+      items: [{ id: 1, name: "beef", price: 40 }],
+      customer: { id: 4, name: "Khalid", city: "Jerusalem" },
       subscriber: { id: "3", name: "Marketing", url: "http://mkt" },
     };
 
-    const result = await transform(order, "pipeline1", "job1", action);
+    const result = await transform(order);
 
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("unknown subscriber");

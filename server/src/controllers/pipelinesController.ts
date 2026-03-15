@@ -61,7 +61,7 @@ export const getAllPipelinesHandler = async (
 ) => {
   try {
     const pipelines = await getPipelines();
-    res.status(200).json(pipelines);
+    res.status(200).json({ data: pipelines, status: "ok" });
   } catch (error: any) {
     next(error);
   }

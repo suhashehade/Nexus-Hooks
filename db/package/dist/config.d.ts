@@ -1,12 +1,12 @@
 export declare const config: {
-    api: {
-        platform: string | undefined;
+  api: {
+    platform: string | undefined;
+  };
+  db: {
+    url: string | undefined;
+    migrationConfig: {
+      migrationsFolder: string;
     };
-    db: {
-        url: string | undefined;
-        migrationConfig: {
-            migrationsFolder: string;
-        };
-    };
-    secret: string | undefined;
+  };
+  secret: string | undefined;
 };
