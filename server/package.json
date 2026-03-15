@@ -10,7 +10,7 @@
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "node --loader ts-node/esm -r tsconfig-paths/register src/index.ts",
-    "test": "vitest --run"
+    "test": "NODE_ENV=test vitest --run"
   },
   "dependencies": {
     "express": "^5.2.1",

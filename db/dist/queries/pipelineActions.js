@@ -1,9 +1,9 @@
 import { db } from "../index.js";
 import { pipelines_actions } from "../schema.js";
 export const createPipelineAction = async (pipelineId, actionId) => {
-  const [result] = await db
-    .insert(pipelines_actions)
-    .values({ pipelineId, actionId })
-    .returning();
-  return result;
+    const [result] = await db
+        .insert(pipelines_actions)
+        .values({ pipelineId, actionId })
+        .returning();
+    return result;
 };

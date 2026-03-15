@@ -6,23 +6,21 @@ const dbSrcDir = dirname(__filename);
 const projectRoot = dirname(dbSrcDir);
 dotenv.config({ path: join(projectRoot, ".env") });
 const migrationConfig = {
-  migrationsFolder: "./src/migrations",
+    migrationsFolder: "./src/migrations",
 };
 export const config = {
-  api: {
-    platform: process.env.PLATFORM,
-  },
-  db: {
-    url: process.env.DATABASE_URL,
-    migrationConfig,
-  },
-  secret: process.env.SECRET,
+    api: {
+        platform: process.env.PLATFORM,
+    },
+    db: {
+        url: process.env.DATABASE_URL,
+        migrationConfig,
+    },
 };
-// Validate required environment variables
 if (!process.env.DATABASE_URL) {
-  console.error(
-    "DATABASE_URL is not set. Please set up your database connection.",
-  );
-  console.error("Create a .env file based on .env.example");
-  process.exit(1);
+    console.error("DATABASE_URL is not set. Please set up your database connection.");
+    console.error("Create a .env file based on .env.example");
+    if (process.env.NODE_ENV !== "test") {
+        process.exit(1);
+    }
 }
