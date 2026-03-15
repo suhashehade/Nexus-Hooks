@@ -8,8 +8,8 @@ export const getAllActionsHandler = async (
 ) => {
   try {
     const actions = await getActions();
-    res.status(200).json(actions);
-  } catch (error: any) {
-    next(error);
+    res.status(200).json({ data: actions, status: "ok" });
+  } catch (error) {
+    next(error as Error);
   }
 };

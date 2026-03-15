@@ -21,7 +21,7 @@ describe("recalculate", () => {
       config: { totalPrice: true },
     };
 
-    const result = await recalculate(order, "pipeline1", "job1", action);
+    const result = await recalculate(order, action);
     expect(result.status).toBe("success");
     expect(result.order?.totalPrice).toBe(30);
   });
@@ -43,7 +43,7 @@ describe("recalculate", () => {
       config: { totalPrice: false },
     };
 
-    const result = await recalculate(order, "pipeline1", "job1", action);
+    const result = await recalculate(order, action);
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("totalPrice recalc disabled");
   });
@@ -62,7 +62,7 @@ describe("recalculate", () => {
       config: { totalPrice: true },
     };
 
-    const result = await recalculate(order, "pipeline1", "job1", action);
+    const result = await recalculate(order, action);
     expect(result.status).toBe("success");
     expect(result.order?.totalPrice).toBe(0);
   });

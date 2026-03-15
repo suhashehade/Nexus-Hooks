@@ -1,7 +1,9 @@
 import * as schema from "./schema.js";
 import postgres from "postgres";
-export declare const db: import("drizzle-orm/postgres-js").PostgresJsDatabase<typeof schema> & {
-    $client: postgres.Sql<{}>;
+export declare const db: import("drizzle-orm/postgres-js").PostgresJsDatabase<
+  typeof schema
+> & {
+  $client: postgres.Sql<{}>;
 };
 export * from "./queries/actions.js";
 export * from "./queries/jobs.js";

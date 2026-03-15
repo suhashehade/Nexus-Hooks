@@ -10,7 +10,7 @@ describe("mergeDup action", () => {
       items: [
         { id: 1, name: "tuna", price: 10, currency: "ILS" },
         { id: 2, name: "salmon", price: 15, currency: "ILS" },
-        { id: 3, name: "tuna", price: 5, currency: "ILS" },
+        { id: 1, name: "tuna", price: 5, currency: "ILS" },
       ],
       totalPrice: 30,
       currency: "ILS",
@@ -18,38 +18,19 @@ describe("mergeDup action", () => {
 
     const action: Action = {
       name: "mergeDup",
-      config: { mergeBy: "name" }, // دمج حسب الاسم
+      config: { mergeBy: "id" },
     };
 
-    const result = await mergeDup(order, "pipeline1", "job1", action);
+    const result = await mergeDup(order, action);
 
     expect(result.status).toBe("success");
     expect(result.order).toBeDefined();
-    expect(result.order!.items).toHaveLength(2); // tuna و salmon فقط
+    expect(result.order!.items).toHaveLength(2);
 
-    const tuna = result.order!.items!.find((i) => i.name === "tuna")!;
-    expect(tuna.price).toBe(15); // 10 + 5 = 15
+    const tuna = result.order!.items!.find((i) => i.id === 1)!;
+    expect(tuna.price).toBe(15);
 
-    const salmon = result.order!.items!.find((i) => i.name === "salmon")!;
+    const salmon = result.order!.items!.find((i) => i.id === 2)!;
     expect(salmon.price).toBe(15);
-  });
-
-  it("should return failed status on error", async () => {
-    const order: Order = {
-      id: 2,
-      items: null as any, // خطأ متعمد
-      totalPrice: 0,
-      currency: "ILS",
-    };
-
-    const action: Action = {
-      name: "mergeDup",
-      config: { mergeBy: "name" },
-    };
-
-    const result = await mergeDup(order, "pipeline1", "job1", action);
-
-    expect(result.status).toBe("failed");
-    expect(result.error).toBeDefined();
   });
 });

@@ -29,8 +29,8 @@ describe("runJob pipeline", () => {
       ],
       actions: [
         { name: "mergeDup", config: { mergeBy: "id" } },
-        { name: "filter", config: { minPrice: 10 } },
-        { name: "normalize", config: { prefixes: ["+970"] } },
+        { name: "filter", config: { totalPrice: true, minPrice: 10 } },
+        { name: "normalize", config: { prefixes: ["+970", "+972"] } },
         { name: "recalculate", config: { totalPrice: true } },
         { name: "fork", config: {} },
         { name: "transform", config: {} },

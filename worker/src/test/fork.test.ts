@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { fork } from "../actions/fork";
 import { Order, Subscriber } from "../lib/types/job";
-import { Action } from "../lib/types/action";
 
 describe("fork", () => {
   const mockOrder: Order = {
@@ -17,19 +16,8 @@ describe("fork", () => {
     { id: "sub2", name: "Shipping", url: "http://shipping" },
   ];
 
-  const action: Action = {
-    name: "fork",
-    config: {},
-  };
-
   it("should fork the order for each subscriber", async () => {
-    const result = await fork(
-      mockOrder,
-      { subscribers },
-      "pipeline1",
-      "job1",
-      action,
-    );
+    const result = await fork(mockOrder, { subscribers });
 
     expect(result.status).toBe("success");
     expect(result.orders).toHaveLength(subscribers.length);
@@ -40,13 +28,7 @@ describe("fork", () => {
   });
 
   it("should skip if no subscribers provided", async () => {
-    const result = await fork(
-      mockOrder,
-      { subscribers: [] },
-      "pipeline1",
-      "job1",
-      action,
-    );
+    const result = await fork(mockOrder, { subscribers: [] });
 
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("no subscribers");

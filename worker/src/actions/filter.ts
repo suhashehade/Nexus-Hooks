@@ -1,13 +1,12 @@
-import { Action, ActionResult } from "../lib/types/action";
+import { Order } from "../lib/types/job.js";
+import { Action, ActionResult } from "../lib/types/action.js";
 
 export async function filter(
-  order: any,
-  pipelineId: string,
-  jobId: string,
+  order: Order,
   action: Action,
 ): Promise<ActionResult> {
   const price = order!.totalPrice!;
-  const { name, config } = action;
+  const { config } = action;
   try {
     if (price < config!.minPrice) {
       return {

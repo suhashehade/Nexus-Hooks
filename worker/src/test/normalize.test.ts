@@ -29,7 +29,7 @@ describe("normalize", () => {
       config: { phone: true, prefixes: ["+970", "+972"] },
     };
 
-    const result = await normalize(order, "pipeline1", "job1", action);
+    const result = await normalize(order, action);
     expect(result.status).toBe("success");
     expect(result.order?.customer?.phoneNumber).toBe("+970591234567");
   });
@@ -44,7 +44,7 @@ describe("normalize", () => {
       config: { phone: true, prefixes: ["+970", "+972"] },
     };
 
-    const result = await normalize(order, "pipeline1", "job1", action);
+    const result = await normalize(order, action);
     expect(result.status).toBe("success");
     expect(result.order?.customer?.phoneNumber).toBe("+97031234567");
   });
@@ -59,7 +59,7 @@ describe("normalize", () => {
       config: { prefixes: ["+970", "+972"] },
     };
 
-    const result = await normalize(order, "pipeline1", "job1", action);
+    const result = await normalize(order, action);
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("no phone number");
   });
@@ -74,7 +74,7 @@ describe("normalize", () => {
       config: { prefixes: ["+972"] },
     };
 
-    const result = await normalize(order, "pipeline1", "job1", action);
+    const result = await normalize(order, action);
     expect(result.status).toBe("skipped");
     expect(result.reason).toBe("unknown pattern");
   });

@@ -1,12 +1,7 @@
-import { Action, ActionResult } from "../lib/types/action";
+import { ActionResult } from "../lib/types/action";
 import { Order } from "../lib/types/job";
 
-export async function transform(
-  order: Order,
-  pipelineId: string,
-  jobId: string,
-  action: Action,
-): Promise<ActionResult> {
+export async function transform(order: Order): Promise<ActionResult> {
   try {
     if (!order.subscriber) {
       return {
@@ -21,11 +16,10 @@ export async function transform(
         status: "success",
         order: {
           id: order.id,
-          subscriber: order.subscriber,
-          totalPrice: order.totalPrice,
-          currency: order.currency,
-          items: order.items,
           customer: order.customer,
+          subscriber: order.subscriber,
+          totalPrice: (order.totalPrice || 0) * 2,
+          items: order.items,
         },
       };
     }
@@ -35,8 +29,8 @@ export async function transform(
         status: "success",
         order: {
           id: order.id,
-          subscriber: order.subscriber,
           customer: order.customer,
+          subscriber: order.subscriber,
         },
       };
     }
@@ -46,10 +40,10 @@ export async function transform(
       reason: "unknown subscriber",
       order,
     };
-  } catch (error) {
+  } catch (err) {
     return {
       status: "failed",
-      reason: "transform error",
+      error: (err as Error).message || "transform failed",
       order,
     };
   }

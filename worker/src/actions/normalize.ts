@@ -3,11 +3,9 @@ import { Order } from "../lib/types/job";
 
 export async function normalize(
   order: Order,
-  pipelineId: string,
-  jobId: string,
   action: Action,
 ): Promise<ActionResult> {
-  const { config, name } = action;
+  const { config } = action;
   const prefixes: string[] = config?.prefixes ?? ["+970", "+972"];
 
   try {
@@ -48,7 +46,7 @@ export async function normalize(
     };
 
     return { status: "success", order: newOrder };
-  } catch (err: any) {
-    return { status: "failed", reason: err.message, order };
+  } catch (err) {
+    return { status: "failed", reason: (err as Error).message, order };
   }
 }

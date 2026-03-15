@@ -1,4 +1,4 @@
-import { Action, ForkResult } from "../lib/types/action";
+import { ForkResult } from "../lib/types/action";
 import { Order, Subscriber } from "../lib/types/job";
 
 export async function fork(
@@ -6,9 +6,6 @@ export async function fork(
   config: {
     subscribers: Subscriber[];
   },
-  pipelineId: string,
-  jobId: string,
-  action: Action,
 ): Promise<ForkResult> {
   try {
     if (!order) {

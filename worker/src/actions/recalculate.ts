@@ -3,11 +3,9 @@ import { Order } from "../lib/types/job";
 
 export async function recalculate(
   order: Order,
-  pipelineId: string,
-  jobId: string,
   action: Action,
 ): Promise<ActionResult> {
-  const { config, name } = action;
+  const { config } = action;
 
   try {
     if (!config?.totalPrice) {
@@ -22,7 +20,7 @@ export async function recalculate(
     }
 
     return { status: "success", order };
-  } catch (err: any) {
-    return { status: "failed", reason: err.message, order };
+  } catch (err) {
+    return { status: "failed", reason: (err as Error).message, order };
   }
 }

@@ -7,7 +7,6 @@ import {
   pipelines,
   pipelines_actions,
   pipelines_subscribers,
-  Source,
   sources,
   SubScriber,
   subscribers,

@@ -9,19 +9,23 @@ import { Job } from "db";
 import { filter } from "./actions/filter.js";
 import { createLogger } from "./utils/logger.js";
 
-const logger = createLogger('worker');
+const logger = createLogger("worker");
 
 export const runJob = async (job: Job, pipeline: any) => {
   let orders: Order[] = [job.payload!];
-  
+
   for (const action of pipeline.actions) {
-    logger.info('⚙️ Executing Action', { jobName: job.name, action: action.name, description: action.description });
-    
+    logger.info("⚙️ Executing Action", {
+      jobName: job.name,
+      action: action.name,
+      description: action.description,
+    });
+
     switch (action.name) {
       case "mergeDup":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
-            const result = await mergeDup(order, pipeline.id, job.id!, action);
+            const result = await mergeDup(order, action);
             return result.order ?? order;
           }),
         );
@@ -29,7 +33,7 @@ export const runJob = async (job: Job, pipeline: any) => {
       case "filter":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
-            const result = await filter(order, pipeline.id, job.id!, action);
+            const result = await filter(order, action);
 
             return result.order ?? order;
           }),
@@ -38,7 +42,7 @@ export const runJob = async (job: Job, pipeline: any) => {
       case "normalize":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
-            const result = await normalize(order, pipeline.id, job.id!, action);
+            const result = await normalize(order, action);
             return result.order ?? order;
           }),
         );
@@ -46,33 +50,22 @@ export const runJob = async (job: Job, pipeline: any) => {
       case "recalculate":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
-            const result = await recalculate(
-              order,
-              pipeline.id,
-              job.id!,
-              action,
-            );
+            const result = await recalculate(order, action);
             return result.order ?? order;
           }),
         );
         break;
 
       case "fork":
-        const forked = await fork(
-          orders[0],
-          {
-            subscribers: pipeline.subscribers,
-          },
-          pipeline.id,
-          job.id!,
-          action,
-        );
+        const forked = await fork(orders[0], {
+          subscribers: pipeline.subscribers,
+        });
         orders = forked?.orders;
         break;
       case "transform":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
-            const result = await transform(order, pipeline.id, job.id!, action);
+            const result = await transform(order);
             return result.order ?? order;
           }),
         );
@@ -80,7 +73,7 @@ export const runJob = async (job: Job, pipeline: any) => {
       case "enrich":
         orders = await Promise.all(
           orders.map(async (order: Order) => {
-            const result = await enrich(order, pipeline.id, job.id!, action);
+            const result = await enrich(order);
             return result.order ?? order;
           }),
         );

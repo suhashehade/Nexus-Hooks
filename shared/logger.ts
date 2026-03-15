@@ -1,9 +1,9 @@
 export enum LogLevel {
-  INFO = 'info',
-  SUCCESS = 'success', 
-  WARNING = 'warning',
-  ERROR = 'error',
-  DEBUG = 'debug'
+  INFO = "info",
+  SUCCESS = "success",
+  WARNING = "warning",
+  ERROR = "error",
+  DEBUG = "debug",
 }
 
 export interface LogContext {
@@ -11,7 +11,7 @@ export interface LogContext {
   jobName?: string;
   pipelineName?: string;
   subscriber?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 class PrettyLogger {
@@ -21,35 +21,39 @@ class PrettyLogger {
     this.serviceName = serviceName;
   }
 
-  private formatMessage(level: LogLevel, message: string, context?: LogContext): string {
+  private formatMessage(
+    level: LogLevel,
+    message: string,
+    context?: LogContext,
+  ): string {
     const timestamp = new Date().toISOString();
     const icons = {
-      [LogLevel.INFO]: '📋',
-      [LogLevel.SUCCESS]: '✅', 
-      [LogLevel.WARNING]: '⚠️',
-      [LogLevel.ERROR]: '❌',
-      [LogLevel.DEBUG]: '🔍'
+      [LogLevel.INFO]: "📋",
+      [LogLevel.SUCCESS]: "✅",
+      [LogLevel.WARNING]: "⚠️",
+      [LogLevel.ERROR]: "❌",
+      [LogLevel.DEBUG]: "🔍",
     };
 
     const colors = {
-      [LogLevel.INFO]: '\x1b[36m',    // Cyan
-      [LogLevel.SUCCESS]: '\x1b[32m',  // Green
-      [LogLevel.WARNING]: '\x1b[33m',  // Yellow
-      [LogLevel.ERROR]: '\x1b[31m',    // Red
-      [LogLevel.DEBUG]: '\x1b[90m',    // Gray
+      [LogLevel.INFO]: "\x1b[36m", // Cyan
+      [LogLevel.SUCCESS]: "\x1b[32m", // Green
+      [LogLevel.WARNING]: "\x1b[33m", // Yellow
+      [LogLevel.ERROR]: "\x1b[31m", // Red
+      [LogLevel.DEBUG]: "\x1b[90m", // Gray
     };
 
-    const reset = '\x1b[0m';
+    const reset = "\x1b[0m";
     const icon = icons[level];
     const color = colors[level];
-    
-    let contextStr = '';
+
+    let contextStr = "";
     if (context) {
       const contextParts = Object.entries(context)
-        .filter(([key, value]) => value !== undefined)
+        .filter(([_, value]) => value !== undefined)
         .map(([key, value]) => `${key}: ${value}`);
       if (contextParts.length > 0) {
-        contextStr = ` [${contextParts.join(', ')}]`;
+        contextStr = ` [${contextParts.join(", ")}]`;
       }
     }
 
@@ -78,24 +82,42 @@ class PrettyLogger {
 
   // Special methods for job tracking
   jobStarted(jobName: string, pipelineName?: string) {
-    this.info('🚀 Job processing started', { jobName, pipelineName });
+    this.info("🚀 Job processing started", { jobName, pipelineName });
   }
 
-  jobCompleted(jobName: string, result?: any) {
-    this.success('🎉 Job completed successfully', { jobName, result: result ? JSON.stringify(result).substring(0, 100) : 'N/A' });
+  jobCompleted(jobName: string, result?: unknown) {
+    this.success("🎉 Job completed successfully", {
+      jobName,
+      result: result ? JSON.stringify(result).substring(0, 100) : "N/A",
+    });
   }
 
   jobFailed(jobName: string, error: string) {
-    this.error('💥 Job failed', { jobName, error });
+    this.error("💥 Job failed", { jobName, error });
   }
 
-  deliveryAttempt(jobName: string, pipelineName: string, subscriber: string, attempt: number, status: string) {
-    const statusIcon = status === 'success' ? '✅' : '❌';
-    this.info(`📤 Delivery attempt ${attempt} ${statusIcon} ${subscriber}`, { jobName, pipelineName, subscriber, attempt, status });
+  deliveryAttempt(
+    jobName: string,
+    pipelineName: string,
+    subscriber: string,
+    attempt: number,
+    status: string,
+  ) {
+    const statusIcon = status === "success" ? "✅" : "❌";
+    this.info(`📤 Delivery attempt ${attempt} ${statusIcon} ${subscriber}`, {
+      jobName,
+      pipelineName,
+      subscriber,
+      attempt,
+      status,
+    });
   }
 
-  pipelineStep(stepName: string, jobName: string, data?: any) {
-    this.info(`⚙️ Pipeline step: ${stepName}`, { jobName, data: data ? JSON.stringify(data).substring(0, 50) : 'N/A' });
+  pipelineStep(stepName: string, jobName: string, data?: unknown) {
+    this.info(`⚙️ Pipeline step: ${stepName}`, {
+      jobName,
+      data: data ? JSON.stringify(data).substring(0, 50) : "N/A",
+    });
   }
 }
 
