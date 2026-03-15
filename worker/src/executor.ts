@@ -7,13 +7,16 @@ import { recalculate } from "./actions/recalculate.js";
 import { Order } from "./lib/types/job.js";
 import { Job } from "db";
 import { filter } from "./actions/filter.js";
+import { createLogger } from "./utils/logger.js";
+
+const logger = createLogger('worker');
 
 export const runJob = async (job: Job, pipeline: any) => {
   let orders: Order[] = [job.payload!];
-  console.log("start");
-
+  
   for (const action of pipeline.actions) {
-    console.log(`action type: ${action.name}`);
+    logger.info('⚙️ Executing Action', { jobName: job.name, action: action.name, description: action.description });
+    
     switch (action.name) {
       case "mergeDup":
         orders = await Promise.all(

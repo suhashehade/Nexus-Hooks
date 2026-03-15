@@ -22,7 +22,6 @@ async function runWorker() {
       }
 
       const pipelineId: string = job.pipelineId!;
-      logger.info('🔍 Fetching pipeline details', { jobName: job.name! });
       const pipeline = await getPipelineByID(pipelineId);
 
       if (!pipeline) {
@@ -30,10 +29,20 @@ async function runWorker() {
         continue;
       }
 
+      logger.info('📥 Job Input Payload', { 
+        jobName: job.name!, 
+        payload: JSON.stringify(job.payload, null, 2)
+      });
+
       logger.info('⚙️ Executing job pipeline', { jobName: job.name!, pipelineName: pipeline.name });
       const orders = await runJob(job, pipeline);
       
       logger.info(`📦 Job execution completed, processing ${orders.length} orders`, { jobName: job.name!, orderCount: orders.length });
+      
+      logger.info('📤 Job Output Payload', { 
+        jobName: job.name!, 
+        orders: JSON.stringify(orders, null, 2)
+      });
       
       try {
         logger.info('📤 Sending results to server', { jobName: job!.name, pipelineName: pipeline!.name, serverUrl: SERVER_INTERNAL_URL });
@@ -48,11 +57,7 @@ async function runWorker() {
           { timeout: 5000 },
         );
         logger.success('✅ Results sent to server successfully', { jobName: job!.name, pipelineName: pipeline!.name });
-        
-        // Pretty print the orders
-        console.log('\n📦 === JOB PROCESSING RESULTS ===');
-        console.log('🆔 Job:', job!.name);
-        console.log('📊 Orders processed:', JSON.stringify(orders, null, 2));
+      
         console.log('=====================================\n');
         
       } catch (error: any) {

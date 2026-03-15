@@ -50,8 +50,7 @@ export const webhookIngestionHandler = async (
     
     const job = await createJob(newJob);
     
-    logger.jobStarted(job.name, pipeline.name);
-    logger.success('🎯 Job created and queued', { jobName: job.name, pipelineName: pipeline.name });
+    logger.info('🎯 Job Queued', { jobName: job.name, pipelineName: pipeline.name });
     
     res.status(202).json({ message: "The job is accepted", job, code: 202 });
   } catch (error: any) {
