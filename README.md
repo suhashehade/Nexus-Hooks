@@ -75,7 +75,7 @@ The Nexus API provides interactive documentation through Swagger UI, available d
 
 ### Usage:
 
-1. Start the server: `docker compose up --build server`
+1. Start the server: `docker compose up server`
 2. Visit Swagger UI: `http://localhost:4000/api-docs-ui/`
 3. Click any endpoint to view details and test
 4. Use the "Try it out" feature to make live API calls
