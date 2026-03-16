@@ -333,7 +333,7 @@ Nexus Hooks includes automated tests for the worker pipelines and the server hea
 
 ### Run tests locally
 
-You can run the tests using `[Vitest](https://vitest.dev/guide/)`:
+You can run the tests using [Vitest](https://vitest.dev/guide/):
 
 ```bash id="vitest-run"
 # Run tests for the worker
