@@ -331,7 +331,7 @@ docker compose up --build
 
 Nexus Hooks includes automated tests for the worker pipelines and the server health endpoint.
 
-### Run tests locally
+### Run tests on Docker
 
 You can run the tests using [Vitest](https://vitest.dev/guide/):
 
