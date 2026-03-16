@@ -28,8 +28,8 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {"type": "string"},
-                    "timestamp": {"type": "string", "format": "date-time"}
+                    "status": { "type": "string" },
+                    "timestamp": { "type": "string", "format": "date-time" }
                   }
                 }
               }
@@ -508,7 +508,14 @@
       },
       "Customer": {
         "type": "object",
-        "required": ["id", "name", "city", "latitude", "longitude", "phoneNumber"],
+        "required": [
+          "id",
+          "name",
+          "city",
+          "latitude",
+          "longitude",
+          "phoneNumber"
+        ],
         "properties": {
           "id": {
             "type": "number",

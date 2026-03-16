@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
-import { BadRequestError, ForbiddenError, UnAuthorizedError } from "../lib/classes/errors.js";
+import {
+  BadRequestError,
+  ForbiddenError,
+  UnAuthorizedError,
+} from "../lib/classes/errors.js";
 import { getPipelineBySecret } from "db";
 import { createJob } from "db";
 import { generateRandomName } from "../utils/generateRandomName.js";
