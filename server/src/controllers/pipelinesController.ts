@@ -26,6 +26,17 @@ export const addPipelineHandler = async (
     if (!source) {
       throw new NotFoundError("Source Not Found!");
     }
+    const currentActions = [...actions];
+    const requiredActions = await getRequiredActions();
+    const isIncludeAllReqs = requiredActions
+      .map((a) => a.id)
+      .every((element) => currentActions.includes(element));
+
+    if (!isIncludeAllReqs) {
+      throw new BadRequestError(
+        "Make sure that all the required actions are included",
+      );
+    }
     const secret = generatePipelineSecret();
     const pipeline = await createPipeline({
       sourceId: req.body.sourceId,
@@ -36,15 +47,7 @@ export const addPipelineHandler = async (
     for (const subscriberId of subscribers) {
       await createPipelineSubscriber(pipeline.id, subscriberId);
     }
-    const requiredActions = await getRequiredActions();
-    if (
-      actions.filter((a: Action) => a.required).length !==
-      requiredActions.length
-    ) {
-      throw new BadRequestError(
-        "Make sure that all the required actions are included",
-      );
-    }
+
     for (const actionId of actions) {
       await createPipelineAction(pipeline.id, actionId);
     }
