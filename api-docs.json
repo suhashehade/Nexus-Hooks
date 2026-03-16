@@ -439,8 +439,7 @@
         "required": ["event", "payload"],
         "properties": {
           "event": {
-            "type": "string",
-            "minLength": 1,
+            "type": "order-complete",
             "description": "Event type identifier"
           },
           "payload": {
