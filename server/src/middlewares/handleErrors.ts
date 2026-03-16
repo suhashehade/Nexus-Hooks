@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   BadRequestError,
   ForbiddenError,
@@ -11,6 +11,7 @@ export const errorHandlerMiddleware = (
   err: Error,
   req: Request,
   res: Response,
+  next: NextFunction,
 ) => {
   if (err instanceof BadRequestError) {
     return res.status(400).send({ error: err.message });
