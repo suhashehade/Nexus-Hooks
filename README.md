@@ -1,5 +1,7 @@
 # Nexus Hooks
 
+![CI](https://github.com/suhashehade/Nexus-Hooks/workflows/CI/badge.svg)
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -311,7 +313,7 @@ PORT=4000
 
 ###### Example for local PostgreSQL:
 
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/nexus
+DATABASE_URL=postgres://postgres:postgres@postgres:5432/nexusdb
 
 ### Install dependencies
 
@@ -322,7 +324,7 @@ npm install
 ### Start all services with Docker
 
 ```bash
-docker-compose up
+docker compose up --build
 ```
 
 ## Running Tests
