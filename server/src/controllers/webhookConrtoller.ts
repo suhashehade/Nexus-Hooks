@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { BadRequestError, ForbiddenError } from "../lib/classes/errors.js";
+import { BadRequestError, ForbiddenError, UnAuthorizedError } from "../lib/classes/errors.js";
 import { getPipelineBySecret } from "db";
 import { createJob } from "db";
 import { generateRandomName } from "../utils/generateRandomName.js";
@@ -27,7 +27,7 @@ export const webhookIngestionHandler = async (
 
     const APIKey = req.get("X-API-Key");
     if (!APIKey) {
-      throw new BadRequestError("API KEY secret is required");
+      throw new UnAuthorizedError("API KEY secret is required");
     }
 
     logger.debug("🔍 Looking up pipeline by secret", {
@@ -36,7 +36,7 @@ export const webhookIngestionHandler = async (
     const pipeline = await getPipelineBySecret(APIKey);
 
     if (!pipeline) {
-      throw new BadRequestError("Invalid secret");
+      throw new UnAuthorizedError("Invalid secret");
     }
 
     logger.success("✅ Pipeline found", { pipelineName: pipeline.name });

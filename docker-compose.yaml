@@ -44,6 +44,7 @@ services:
       - migrate
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/nexusdb?sslmode=disable
+      NODE_ENV: development
     restart: unless-stopped
 
   worker:

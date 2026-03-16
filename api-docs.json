@@ -1,0 +1,549 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nexus API",
+    "version": "1.0.0",
+    "description": "Webhook processing and pipeline management system"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://your-app.vercel.app",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {"type": "string"},
+                    "timestamp": {"type": "string", "format": "date-time"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipelines": {
+      "get": {
+        "summary": "Get all pipelines",
+        "tags": ["Pipelines"],
+        "responses": {
+          "200": {
+            "description": "List of all pipelines",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pipeline"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new pipeline",
+        "tags": ["Pipelines"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePipeline"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pipeline created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pipeline"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          }
+        }
+      }
+    },
+    "/api/pipelines/{pipelineId}": {
+      "get": {
+        "summary": "Get a specific pipeline by ID",
+        "tags": ["Pipelines"],
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the pipeline"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pipeline details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pipeline"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pipeline not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a specific pipeline by ID",
+        "tags": ["Pipelines"],
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the pipeline"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pipeline deleted successfully"
+          },
+          "404": {
+            "description": "Pipeline not found"
+          }
+        }
+      }
+    },
+    "/api/sources": {
+      "get": {
+        "summary": "Get all sources",
+        "tags": ["Sources"],
+        "responses": {
+          "200": {
+            "description": "List of all sources",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Source"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/actions": {
+      "get": {
+        "summary": "Get all actions",
+        "tags": ["Actions"],
+        "responses": {
+          "200": {
+            "description": "List of all actions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Action"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs": {
+      "get": {
+        "summary": "Get all jobs",
+        "tags": ["Jobs"],
+        "responses": {
+          "200": {
+            "description": "List of all jobs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Job"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}": {
+      "get": {
+        "summary": "Get job details",
+        "tags": ["Jobs"],
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the job"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found"
+          }
+        }
+      }
+    },
+    "/api/nexus/webhooks": {
+      "post": {
+        "summary": "Ingest webhook events",
+        "tags": ["Webhooks"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook processed successfully"
+          },
+          "400": {
+            "description": "Invalid webhook payload"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Pipeline": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Pipeline UUID"
+          },
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Source UUID"
+          },
+          "subscribers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of subscriber identifiers"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of action identifiers"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
+      "CreatePipeline": {
+        "type": "object",
+        "required": ["sourceId", "subscribers", "actions"],
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Source UUID"
+          },
+          "subscribers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of subscriber identifiers"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of action identifiers"
+          }
+        }
+      },
+      "Source": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Source UUID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Source name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Source type (e.g., webhook)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Source description"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          }
+        }
+      },
+      "Action": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Action identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Action name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Action description"
+          },
+          "type": {
+            "type": "string",
+            "description": "Action type (e.g., notification)"
+          }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Job UUID"
+          },
+          "pipelineId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Pipeline UUID"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["completed", "running", "failed"],
+            "description": "Job status"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Completion timestamp"
+          }
+        }
+      },
+      "JobDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Job"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "input": {
+                "type": "object",
+                "description": "Job input data"
+              },
+              "output": {
+                "type": "object",
+                "description": "Job output data"
+              },
+              "error": {
+                "type": ["object", "null"],
+                "description": "Error information if failed"
+              }
+            }
+          }
+        ]
+      },
+      "WebhookPayload": {
+        "type": "object",
+        "required": ["event", "payload"],
+        "properties": {
+          "event": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Event type identifier"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/EventPayload"
+          }
+        }
+      },
+      "EventPayload": {
+        "type": "object",
+        "required": ["id", "totalPrice", "currency", "items", "customer"],
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Order/event ID"
+          },
+          "totalPrice": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Total price"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Currency code"
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            },
+            "description": "Order items"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "required": ["id", "name", "price", "currency"],
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Item ID"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Item name"
+          },
+          "price": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Item price"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Item currency"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "required": ["id", "name", "city", "latitude", "longitude", "phoneNumber"],
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Customer ID"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Customer name"
+          },
+          "city": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Customer city"
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "Latitude coordinate"
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "description": "Longitude coordinate"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Customer phone number"
+          }
+        }
+      }
+    }
+  }
+}

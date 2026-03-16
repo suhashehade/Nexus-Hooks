@@ -1,5 +1,28 @@
 # Nexus Hooks
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Goal](#goal)
+- [API Documentation](#api-documentation)
+  - [Interactive Swagger UI](#interactive-swagger-ui)
+  - [Available Endpoints](#available-endpoints)
+  - [Usage](#usage)
+- [Setup](#setup)
+  - [Clone repo](#clone-repo)
+  - [.env setup](#env-setup)
+  - [Install dependencies](#install-dependencies)
+  - [Start all services with Docker](#start-all-services-with-docker)
+- [Running Tests](#running-tests)
+- [Architecture & Design Decisions](#architecture--design-decisions)
+  - [Design Decisions](#-design-decisions)
+  - [Core Services](#-core-services)
+  - [Shared Libraries](#-shared-libraries)
+- [Pipeline Processing](#pipeline-processing)
+  - [Pipeline Steps](#pipeline-steps)
+  - [Processing Flow](#processing-flow)
+
 ## Overview
 
 Nexus Hooks is a webhook-driven event processing system that allows external systems such as restaurants, stores, handmade mini-projects, or any commercial platform to send order events. These events are processed through configurable pipelines and then delivered to downstream systems such as shipping and accounting services.
@@ -15,10 +38,45 @@ The system simulates a simplified integration platform where incoming orders pas
 - Reliable event delivery to subscribers
 - Retry and error handling
 - Containerized services using: Docker
+- **Interactive API Documentation**: Swagger UI for testing and exploration
 
 ### Goal
 
 The goal of this project is to demonstrate how webhook-driven systems can process events reliably using pipelines, background workers, and service-based architecture.
+
+## API Documentation
+
+### Interactive Swagger UI
+
+The Nexus API provides interactive documentation through Swagger UI, available during development:
+
+**📚 API Documentation URL**: `http://localhost:4000/api-docs-ui/`
+
+### Features of Swagger UI:
+
+- **Interactive Testing**: Try API endpoints directly from your browser
+- **Request/Response Examples**: See sample payloads and expected responses
+- **Parameter Validation**: Understand required fields and formats
+- **Authentication Headers**: View required X-API-KEY for webhook endpoints
+- **Schema Documentation**: Complete data models for all endpoints
+
+### Available Endpoints:
+
+- **Health Check**: `GET /health`
+- **Pipelines**: `GET /api/pipelines`, `POST /api/pipelines`, `DELETE /api/pipelines/{id}`
+- **Sources**: `GET /api/sources`
+- **Actions**: `GET /api/actions`
+- **Subscribers**: `GET /api/subscribers`
+- **Jobs**: `GET /api/jobs`, `GET /api/jobs/{id}`, `GET /api/jobs?pipelineId={id}`
+- **Webhooks**: `POST /api/nexus/webhooks` (requires `X-API-KEY` header)
+- **Internal**: `POST /internal/deliver` (internal system use)
+
+### Usage:
+
+1. Start the server: `docker compose up --build server`
+2. Visit Swagger UI: `http://localhost:4000/api-docs-ui/`
+3. Click any endpoint to view details and test
+4. Use the "Try it out" feature to make live API calls
 
 ## Architecture & Design Decisions
 
@@ -230,40 +288,41 @@ This section explains how to set up and run the Nexus Hooks project locally usin
 
 The project is fully containerized. All services run independently but are connected via Docker Compose.
 
-1. Build and start all services:
+### Clone repo
+
+git clone https://github.com/suhashehade/Nexus-Hooks.git
+
+### .env setup
 
 ```bash
-docker compose up --build
+cd db
+cp .env.example .env
 ```
 
-2. Build and start single service:
+#### Server port
+
+##### The port the Nexus API server will listen on
+
+PORT=4000
+
+#### Database connection URL
+
+##### Format: postgres://<username>:<password>@<host>:<port>/<database>
+
+###### Example for local PostgreSQL:
+
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/nexus
+
+### Install dependencies
 
 ```bash
-docker compose up [service_name] --build
+npm install
 ```
 
-3. Stop service:
+### Start all services with Docker
 
 ```bash
-docker stop nexus-[service_name]
-```
-
-3. Restart service:
-
-```bash
-docker restart nexus-[service_name]
-```
-
-4. Remove all services:
-
-```bash
-docker compose down
-```
-
-5. Remove single service:
-
-```bash
-docker compose down [service_name]
+docker-compose up
 ```
 
 ## Running Tests
