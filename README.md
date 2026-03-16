@@ -1,6 +1,6 @@
 # Nexus Hooks
 
-![CI](https://github.com/suhashehade/Nexus-Hooks/workflows/CI/badge.svg)
+![CI](https://github.com/suhashehade/learn-cicd-typescript-starter/actions/workflows/ci.yml/badge.svg)
 
 ## Table of Contents
 
