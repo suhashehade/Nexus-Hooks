@@ -1,333 +1,340 @@
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Nexus API',
-      version: '1.0.0',
-      description: 'Webhook processing and pipeline management system',
+      title: "Nexus API",
+      version: "1.0.0",
+      description: "Webhook processing and pipeline management system",
     },
     servers: [
       {
-        url: 'http://localhost:4000',
-        description: 'Development server',
+        url: "http://localhost:4000",
+        description: "Development server",
       },
     ],
     components: {
       schemas: {
         Pipeline: {
-          type: 'object',
+          type: "object",
           properties: {
             id: {
-              type: 'string',
-              format: 'uuid',
-              description: 'Pipeline UUID'
+              type: "string",
+              format: "uuid",
+              description: "Pipeline UUID",
             },
             sourceId: {
-              type: 'string',
-              format: 'uuid',
-              description: 'Source UUID'
+              type: "string",
+              format: "uuid",
+              description: "Source UUID",
             },
             subscribers: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'string'
+                type: "string",
               },
-              description: 'Array of subscriber identifiers'
+              description: "Array of subscriber identifiers",
             },
             actions: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'string'
+                type: "string",
               },
-              description: 'Array of action identifiers'
+              description: "Array of action identifiers",
             },
             createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Creation timestamp'
+              type: "string",
+              format: "date-time",
+              description: "Creation timestamp",
             },
             updatedAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Last update timestamp'
-            }
-          }
+              type: "string",
+              format: "date-time",
+              description: "Last update timestamp",
+            },
+          },
         },
         Source: {
-          type: 'object',
+          type: "object",
           properties: {
             id: {
-              type: 'string',
-              format: 'uuid',
-              description: 'Source UUID'
+              type: "string",
+              format: "uuid",
+              description: "Source UUID",
             },
             name: {
-              type: 'string',
-              description: 'Source name'
+              type: "string",
+              description: "Source name",
             },
             type: {
-              type: 'string',
-              description: 'Source type (e.g., webhook)'
+              type: "string",
+              description: "Source type (e.g., webhook)",
             },
             description: {
-              type: 'string',
-              description: 'Source description'
+              type: "string",
+              description: "Source description",
             },
             createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Creation timestamp'
-            }
-          }
+              type: "string",
+              format: "date-time",
+              description: "Creation timestamp",
+            },
+          },
         },
         Action: {
-          type: 'object',
+          type: "object",
           properties: {
             id: {
-              type: 'string',
-              description: 'Action identifier'
+              type: "string",
+              description: "Action identifier",
             },
             name: {
-              type: 'string',
-              description: 'Action name'
+              type: "string",
+              description: "Action name",
             },
             description: {
-              type: 'string',
-              description: 'Action description'
+              type: "string",
+              description: "Action description",
             },
             type: {
-              type: 'string',
-              description: 'Action type (e.g., notification)'
-            }
-          }
+              type: "string",
+              description: "Action type (e.g., notification)",
+            },
+          },
         },
         Job: {
-          type: 'object',
+          type: "object",
           properties: {
             id: {
-              type: 'string',
-              format: 'uuid',
-              description: 'Job UUID'
+              type: "string",
+              format: "uuid",
+              description: "Job UUID",
             },
             pipelineId: {
-              type: 'string',
-              format: 'uuid',
-              description: 'Pipeline UUID'
+              type: "string",
+              format: "uuid",
+              description: "Pipeline UUID",
             },
             status: {
-              type: 'string',
-              enum: ['completed', 'running', 'failed'],
-              description: 'Job status'
+              type: "string",
+              enum: ["completed", "running", "failed"],
+              description: "Job status",
             },
             createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Creation timestamp'
+              type: "string",
+              format: "date-time",
+              description: "Creation timestamp",
             },
             completedAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Completion timestamp'
-            }
-          }
+              type: "string",
+              format: "date-time",
+              description: "Completion timestamp",
+            },
+          },
         },
         JobDetails: {
           allOf: [
             {
-              $ref: '#/components/schemas/Job'
+              $ref: "#/components/schemas/Job",
             },
             {
-              type: 'object',
+              type: "object",
               properties: {
                 input: {
-                  type: 'object',
-                  description: 'Job input data'
+                  type: "object",
+                  description: "Job input data",
                 },
                 output: {
-                  type: 'object',
-                  description: 'Job output data'
+                  type: "object",
+                  description: "Job output data",
                 },
                 error: {
-                  type: ['object', 'null'],
-                  description: 'Error information if failed'
-                }
-              }
-            }
-          ]
+                  type: ["object", "null"],
+                  description: "Error information if failed",
+                },
+              },
+            },
+          ],
         },
         Subscriber: {
-          type: 'object',
+          type: "object",
           properties: {
             id: {
-              type: 'string',
-              description: 'Subscriber identifier'
+              type: "string",
+              description: "Subscriber identifier",
             },
             name: {
-              type: 'string',
-              description: 'Subscriber name'
+              type: "string",
+              description: "Subscriber name",
             },
             type: {
-              type: 'string',
-              description: 'Subscriber type (e.g., accounting, shipping)'
+              type: "string",
+              description: "Subscriber type (e.g., accounting, shipping)",
             },
             endpoint: {
-              type: 'string',
-              description: 'Subscriber endpoint URL'
+              type: "string",
+              description: "Subscriber endpoint URL",
             },
             description: {
-              type: 'string',
-              description: 'Subscriber description'
-            }
-          }
+              type: "string",
+              description: "Subscriber description",
+            },
+          },
         },
         DeliveryRequest: {
-          type: 'object',
-          required: ['subscriberId', 'data'],
+          type: "object",
+          required: ["subscriberId", "data"],
           properties: {
             subscriberId: {
-              type: 'string',
-              description: 'ID of the subscriber to deliver to'
+              type: "string",
+              description: "ID of the subscriber to deliver to",
             },
             data: {
-              type: 'object',
-              description: 'The processed event data to deliver'
+              type: "object",
+              description: "The processed event data to deliver",
             },
             pipeline: {
-              type: 'object',
-              description: 'Pipeline information'
-            }
-          }
+              type: "object",
+              description: "Pipeline information",
+            },
+          },
         },
         DeliveryResponse: {
-          type: 'object',
+          type: "object",
           properties: {
             success: {
-              type: 'boolean',
-              description: 'Whether the delivery was successful'
+              type: "boolean",
+              description: "Whether the delivery was successful",
             },
             message: {
-              type: 'string',
-              description: 'Delivery status message'
-            }
-          }
+              type: "string",
+              description: "Delivery status message",
+            },
+          },
         },
         WebhookPayload: {
-          type: 'object',
-          required: ['event', 'payload'],
+          type: "object",
+          required: ["event", "payload"],
           properties: {
             event: {
-              type: 'string',
+              type: "string",
               minLength: 1,
-              description: 'Event type identifier'
+              description: "Event type identifier",
             },
             payload: {
-              $ref: '#/components/schemas/EventPayload'
-            }
-          }
+              $ref: "#/components/schemas/EventPayload",
+            },
+          },
         },
         EventPayload: {
-          type: 'object',
-          required: ['id', 'totalPrice', 'currency', 'items', 'customer'],
+          type: "object",
+          required: ["id", "totalPrice", "currency", "items", "customer"],
           properties: {
             id: {
-              type: 'number',
+              type: "number",
               minimum: 1,
-              description: 'Order/event ID'
+              description: "Order/event ID",
             },
             totalPrice: {
-              type: 'number',
+              type: "number",
               minimum: 1,
-              description: 'Total price'
+              description: "Total price",
             },
             currency: {
-              type: 'string',
+              type: "string",
               minLength: 1,
-              description: 'Currency code'
+              description: "Currency code",
             },
             items: {
-              type: 'array',
+              type: "array",
               minItems: 1,
               items: {
-                $ref: '#/components/schemas/OrderItem'
+                $ref: "#/components/schemas/OrderItem",
               },
-              description: 'Order items'
+              description: "Order items",
             },
             customer: {
-              $ref: '#/components/schemas/Customer'
-            }
-          }
+              $ref: "#/components/schemas/Customer",
+            },
+          },
         },
         OrderItem: {
-          type: 'object',
-          required: ['id', 'name', 'price', 'currency'],
+          type: "object",
+          required: ["id", "name", "price", "currency"],
           properties: {
             id: {
-              type: 'number',
+              type: "number",
               minimum: 1,
-              description: 'Item ID'
+              description: "Item ID",
             },
             name: {
-              type: 'string',
+              type: "string",
               minLength: 1,
-              description: 'Item name'
+              description: "Item name",
             },
             price: {
-              type: 'number',
+              type: "number",
               minimum: 1,
-              description: 'Item price'
+              description: "Item price",
             },
             currency: {
-              type: 'string',
+              type: "string",
               minLength: 1,
-              description: 'Item currency'
-            }
-          }
+              description: "Item currency",
+            },
+          },
         },
         Customer: {
-          type: 'object',
-          required: ['id', 'name', 'city', 'latitude', 'longitude', 'phoneNumber'],
+          type: "object",
+          required: [
+            "id",
+            "name",
+            "city",
+            "latitude",
+            "longitude",
+            "phoneNumber",
+          ],
           properties: {
             id: {
-              type: 'number',
+              type: "number",
               minimum: 1,
-              description: 'Customer ID'
+              description: "Customer ID",
             },
             name: {
-              type: 'string',
+              type: "string",
               minLength: 1,
-              description: 'Customer name'
+              description: "Customer name",
             },
             city: {
-              type: 'string',
+              type: "string",
               minLength: 1,
-              description: 'Customer city'
+              description: "Customer city",
             },
             latitude: {
-              type: 'number',
+              type: "number",
               minimum: -90,
               maximum: 90,
-              description: 'Latitude coordinate'
+              description: "Latitude coordinate",
             },
             longitude: {
-              type: 'number',
+              type: "number",
               minimum: -180,
               maximum: 180,
-              description: 'Longitude coordinate'
+              description: "Longitude coordinate",
             },
             phoneNumber: {
-              type: 'string',
+              type: "string",
               minLength: 1,
-              description: 'Customer phone number'
-            }
-          }
-        }
-      }
-    }
+              description: "Customer phone number",
+            },
+          },
+        },
+      },
+    },
   },
-  apis: ['./src/routes/*.ts'], // Only look at route files for comments
+  apis: ["./src/routes/*.ts"], // Only look at route files for comments
 };
 
 export const specs = swaggerJsdoc(options);
