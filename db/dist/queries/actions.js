@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "../index.js";
 import { actions } from "../schema.js";
 export const createAction = async (action) => {
@@ -6,6 +7,13 @@ export const createAction = async (action) => {
 };
 export const getActions = async () => {
     const result = await db.select().from(actions);
+    return result;
+};
+export const getRequiredActions = async () => {
+    const result = await db
+        .select()
+        .from(actions)
+        .where(eq(actions.required, true));
     return result;
 };
 export const getAction = async () => {

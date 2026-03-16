@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  Action,
   createPipeline,
   deletePipeline,
   getPipelineByID,
   getPipelines,
+  getRequiredActions,
 } from "db";
 import { getSourceByID } from "db";
-import { NotFoundError } from "../lib/classes/errors.js";
+import { BadRequestError, NotFoundError } from "../lib/classes/errors.js";
 import { createPipelineSubscriber } from "db";
 import { createPipelineAction } from "db";
 import { generatePipelineSecret } from "../utils/generatePipelineSecret.js";
@@ -34,7 +36,15 @@ export const addPipelineHandler = async (
     for (const subscriberId of subscribers) {
       await createPipelineSubscriber(pipeline.id, subscriberId);
     }
-
+    const requiredActions = await getRequiredActions();
+    if (
+      actions.filter((a: Action) => a.required).length !==
+      requiredActions.length
+    ) {
+      throw new BadRequestError(
+        "Make sure that all the required actions are included",
+      );
+    }
     for (const actionId of actions) {
       await createPipelineAction(pipeline.id, actionId);
     }

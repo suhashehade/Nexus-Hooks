@@ -22,9 +22,7 @@ export const webhookIngestionHandler = async (
     });
 
     if (event !== "order-complete") {
-      throw new ForbiddenError(
-        "This operation is not allowed, the order is not completed",
-      );
+      throw new ForbiddenError("Invalid webhook signature");
     }
 
     const APIKey = req.get("X-API-Key");
