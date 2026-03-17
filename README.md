@@ -169,7 +169,7 @@ The system is composed of several core services that work together to process we
   - Listing job status, history, and delivery attempts
 
 > The server queues each incoming job in the database for asynchronous execution.  
-> Implemented using: [Express](https://www.npmjs.com/package/express)
+> Implemented using: [Express](https://www.npmjs.com/package/express).
 > Request Body, Request Params, and Request Query validated using: [Zod](https://zod.dev/)
 
 ---
