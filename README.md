@@ -70,7 +70,7 @@ The Nexus API provides interactive documentation through Swagger UI, available d
 - **Actions**: `GET /api/actions`
 - **Subscribers**: `GET /api/subscribers`
 - **Jobs**: `GET /api/jobs/{id}`, `GET /api/jobs?pipelineId={id}`
-- **Webhooks**: `POST /api/nexus/webhooks?pipelineId={id}` (requires `X-API-KEY` header)
+- **Webhooks**: `POST /api/nexus/webhooks` (requires `X-API-KEY` header, pipelineId in request body)
 - **Internal**: `POST /internal/deliver` (internal system use)
 
 ### Usage:
@@ -169,6 +169,7 @@ The system is composed of several core services that work together to process we
 
 > The server queues each incoming job in the database for asynchronous execution.  
 > Implemented using: [Express](https://www.npmjs.com/package/express)
+> Request Body, Request Params, and Request Query validated using: [Zod](https://zod.dev/)
 
 ---
 

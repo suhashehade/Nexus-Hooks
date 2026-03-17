@@ -12,13 +12,6 @@ const router = Router();
  *     summary: Ingest webhook events
  *     tags: [Webhooks]
  *     parameters:
- *       - in: query
- *         name: pipelineId
- *         required: false
- *         schema:
- *           type: string
- *           format: uuid
- *         description: UUID of the pipeline to use for processing this webhook
  *       - in: header
  *         name: X-API-KEY
  *         required: true
@@ -30,7 +23,7 @@ const router = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/WebhookPayload'
+ *             $ref: '#/components/schemas/WebhookPayloadWithPipeline'
  *     responses:
  *       200:
  *         description: Webhook processed successfully

@@ -215,18 +215,37 @@ const options = {
           },
         },
         WebhookPayload: {
-          type: "object",
-          required: ["event", "payload"],
+          type: 'object',
+          required: ['event', 'payload'],
           properties: {
             event: {
-              type: "string",
+              type: 'string',
               minLength: 1,
-              description: "Event type identifier",
+              description: 'Event type identifier'
             },
             payload: {
-              $ref: "#/components/schemas/EventPayload",
+              $ref: '#/components/schemas/EventPayload'
+            }
+          }
+        },
+        WebhookPayloadWithPipeline: {
+          type: 'object',
+          required: ['event', 'pipelineId', 'payload'],
+          properties: {
+            event: {
+              type: 'string',
+              minLength: 1,
+              description: 'Event type identifier'
             },
-          },
+            pipelineId: {
+              type: 'string',
+              format: 'uuid',
+              description: 'UUID of the pipeline to use for processing this webhook'
+            },
+            payload: {
+              $ref: '#/components/schemas/EventPayload'
+            }
+          }
         },
         EventPayload: {
           type: "object",

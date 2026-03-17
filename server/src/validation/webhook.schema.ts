@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const createWebhookSchema = z.object({
   event: z.string().min(1),
+  pipelineId: z.string().uuid(),
   payload: z.object({
     id: z.number(),
     totalPrice: z.number().min(1),

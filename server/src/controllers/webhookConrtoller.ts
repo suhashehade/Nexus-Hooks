@@ -18,8 +18,7 @@ export const webhookIngestionHandler = async (
   next: NextFunction,
 ) => {
   try {
-    const { event, payload } = req.body;
-    const pipelineId: string = req.query.pipelineId?.toString() || "";
+    const { event, payload, pipelineId } = req.body;
     logger.info("📥 Webhook received", {
       event,
       payload: JSON.stringify(payload).substring(0, 100),

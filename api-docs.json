@@ -247,14 +247,13 @@
         "tags": ["Webhooks"],
         "parameters": [
           {
-            "name": "pipelineId",
-            "in": "query",
-            "required": false,
+            "name": "X-API-KEY",
+            "in": "header",
+            "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "UUID of the pipeline to use for processing this webhook"
+            "description": "Pipeline secret API key for webhook authentication"
           }
         ],
         "requestBody": {
@@ -262,7 +261,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WebhookPayload"
+                "$ref": "#/components/schemas/WebhookPayloadWithPipeline"
               }
             }
           }
@@ -272,7 +271,10 @@
             "description": "Webhook processed successfully"
           },
           "400": {
-            "description": "Invalid webhook payload"
+            "description": "Invalid webhook payload or missing pipelineId"
+          },
+          "401": {
+            "description": "Missing or invalid API key"
           }
         }
       }
@@ -452,8 +454,27 @@
         "properties": {
           "event": {
             "type": "string",
-            "enum": ["order-complete"],
+            "minLength": 1,
             "description": "Event type identifier"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/EventPayload"
+          }
+        }
+      },
+      "WebhookPayloadWithPipeline": {
+        "type": "object",
+        "required": ["event", "pipelineId", "payload"],
+        "properties": {
+          "event": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Event type identifier"
+          },
+          "pipelineId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the pipeline to use for processing this webhook"
           },
           "payload": {
             "$ref": "#/components/schemas/EventPayload"
