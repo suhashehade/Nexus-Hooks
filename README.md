@@ -81,6 +81,8 @@ The Nexus API provides interactive documentation through Swagger UI, available d
 3. Click any endpoint to view details and test
 4. Use the "Try it out" feature to make live API calls
 
+### See also: [api-docs.json](https://github.com/suhashehade/Nexus-Hooks/blob/main/api-docs.json) in this repo.
+
 ## Architecture & Design Decisions
 
 Nexus Hooks follows a **service-oriented architecture** organized as a monorepo using npm workspaces. Each major component runs as an independent service inside [Docker](https://www.docker.com/) while sharing internal libraries when appropriate.
