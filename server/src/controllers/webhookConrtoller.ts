@@ -28,19 +28,23 @@ export const webhookIngestionHandler = async (
       throw new ForbiddenError("Invalid webhook signature");
     }
 
-    const APIKey = req.get("X-API-Key");
-
     if (!pipelineId) {
       throw new BadRequestError("pipeline is required");
     }
     const pipeline = await getPipelineByID(pipelineId);
+
+    if (!pipeline) {
+      throw new BadRequestError("Pipeline not found");
+    }
+
+    const APIKey = req.get("X-API-Key");
 
     if (!APIKey || pipeline.secret !== APIKey) {
       throw new UnAuthorizedError("Invalid secret");
     }
 
     logger.debug("🔍 Looking up pipeline by secret", {
-      apiKey: APIKey.substring(0, 8) + "...",
+      apiKey: APIKey?.substring(0, 8) + "...",
     });
 
     logger.success("✅ Pipeline found", { pipelineName: pipeline.name });
