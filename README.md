@@ -65,11 +65,11 @@ The Nexus API provides interactive documentation through Swagger UI, available d
 ### Available Endpoints:
 
 - **Health Check**: `GET /health`
-- **Pipelines**: `GET /api/pipelines`, `POST /api/pipelines`, `DELETE /api/pipelines/{id}`
+- **Pipelines**: `GET /api/pipelines`, `GET /api/pipelines/{id}`,`POST /api/pipelines`, `DELETE /api/pipelines/{id}`
 - **Sources**: `GET /api/sources`
 - **Actions**: `GET /api/actions`
 - **Subscribers**: `GET /api/subscribers`
-- **Jobs**: `GET /api/jobs`, `GET /api/jobs/{id}`, `GET /api/jobs?pipelineId={id}`
+- **Jobs**: `GET /api/jobs/{id}`, `GET /api/jobs?pipelineId={id}`
 - **Webhooks**: `POST /api/nexus/webhooks` (requires `X-API-KEY` header)
 - **Internal**: `POST /internal/deliver` (internal system use)
 
