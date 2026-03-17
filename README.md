@@ -76,7 +76,7 @@ The Nexus API provides interactive documentation through Swagger UI, available d
 
 ### Usage:
 
-1. Start the server: `docker compose up server`
+1. Start the server: `docker compose up`
 2. Visit Swagger UI: `http://localhost:4000/api-docs-ui/`
 3. Click any endpoint to view details and test
 4. Use the "Try it out" feature to make live API calls
@@ -311,11 +311,11 @@ PORT=4000
 
 #### Database connection URL
 
-##### Format: postgres://<username>:<password>@<host>:<port>/<database>
+##### Format: postgres://username:password@host:port/database
 
 ###### Example for local PostgreSQL:
 
-DATABASE_URL=postgres://postgres:postgres@postgres:5432/nexusdb
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/nexusdb
 
 ### Install dependencies
 
@@ -326,7 +326,7 @@ npm install
 ### Start all services with Docker
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
 ## Running Tests
