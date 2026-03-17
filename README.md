@@ -34,6 +34,7 @@ The system simulates a simplified integration platform where incoming orders pas
 ### Key Features
 
 - Webhook ingestion endpoint
+- Pipeline secret authentication
 - webhook signature verification
 - Configurable event pipelines
 - Background job processing
