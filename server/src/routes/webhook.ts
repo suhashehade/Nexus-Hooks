@@ -12,6 +12,13 @@ const router = Router();
  *     summary: Ingest webhook events
  *     tags: [Webhooks]
  *     parameters:
+ *       - in: query
+ *         name: pipelineId
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: UUID of the pipeline to use for processing this webhook
  *       - in: header
  *         name: X-API-KEY
  *         required: true
@@ -28,7 +35,7 @@ const router = Router();
  *       200:
  *         description: Webhook processed successfully
  *       400:
- *         description: Invalid webhook payload
+ *         description: Invalid webhook payload or missing pipelineId
  *       401:
  *         description: Missing or invalid API key
  */

@@ -22,6 +22,7 @@ export const getPipelines = async () => {
     .select({
       pipelineId: pipelines.id,
       pipelineName: pipelines.name,
+      pipelineSecret: pipelines.secret,
 
       sourceId: sources.id,
       sourceName: sources.name,
@@ -64,6 +65,7 @@ export const getPipelines = async () => {
       pipelinesMap.set(row.pipelineId, {
         id: row.pipelineId,
         name: row.pipelineName,
+        secret: row.pipelineSecret,
         source: {
           id: row.sourceId,
           name: row.sourceName,
@@ -113,6 +115,7 @@ export const getPipelineByID = async (pipelineId: string) => {
     .select({
       pipelineId: pipelines.id,
       pipelineName: pipelines.name,
+      pipelineSecret: pipelines.secret,
 
       sourceId: sources.id,
       sourceName: sources.name,
@@ -152,6 +155,7 @@ export const getPipelineByID = async (pipelineId: string) => {
       pipelineMap.set(row.pipelineId, {
         id: row.pipelineId,
         name: row.pipelineName,
+        secret: row.pipelineSecret,
         source: {
           id: row.sourceId,
           name: row.sourceName,

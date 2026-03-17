@@ -70,7 +70,7 @@ The Nexus API provides interactive documentation through Swagger UI, available d
 - **Actions**: `GET /api/actions`
 - **Subscribers**: `GET /api/subscribers`
 - **Jobs**: `GET /api/jobs/{id}`, `GET /api/jobs?pipelineId={id}`
-- **Webhooks**: `POST /api/nexus/webhooks` (requires `X-API-KEY` header)
+- **Webhooks**: `POST /api/nexus/webhooks?pipelineId={id}` (requires `X-API-KEY` header)
 - **Internal**: `POST /internal/deliver` (internal system use)
 
 ### Usage:

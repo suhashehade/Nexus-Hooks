@@ -245,6 +245,18 @@
       "post": {
         "summary": "Ingest webhook events",
         "tags": ["Webhooks"],
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the pipeline to use for processing this webhook"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {

@@ -5,7 +5,7 @@ import {
   ForbiddenError,
   UnAuthorizedError,
 } from "../lib/classes/errors.js";
-import { getPipelineBySecret } from "db";
+import { getPipelineByID, getPipelineBySecret } from "db";
 import { createJob } from "db";
 import { generateRandomName } from "../utils/generateRandomName.js";
 import { createLogger } from "../utils/logger.js";
@@ -19,7 +19,7 @@ export const webhookIngestionHandler = async (
 ) => {
   try {
     const { event, payload } = req.body;
-
+    const pipelineId: string = req.query.pipelineId?.toString() || "";
     logger.info("📥 Webhook received", {
       event,
       payload: JSON.stringify(payload).substring(0, 100),
@@ -30,18 +30,19 @@ export const webhookIngestionHandler = async (
     }
 
     const APIKey = req.get("X-API-Key");
-    if (!APIKey) {
-      throw new UnAuthorizedError("API KEY secret is required");
+
+    if (!pipelineId) {
+      throw new BadRequestError("pipeline is required");
+    }
+    const pipeline = await getPipelineByID(pipelineId);
+
+    if (!APIKey || pipeline.secret !== APIKey) {
+      throw new UnAuthorizedError("Invalid secret");
     }
 
     logger.debug("🔍 Looking up pipeline by secret", {
       apiKey: APIKey.substring(0, 8) + "...",
     });
-    const pipeline = await getPipelineBySecret(APIKey);
-
-    if (!pipeline) {
-      throw new UnAuthorizedError("Invalid secret");
-    }
 
     logger.success("✅ Pipeline found", { pipelineName: pipeline.name });
 
