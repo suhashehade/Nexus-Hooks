@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   BadRequestError,
   ForbiddenError,
+  NotFoundError,
   UnAuthorizedError,
 } from "../lib/classes/errors.js";
 import { getPipelineByID, getPipelineBySecret } from "db";
@@ -34,7 +35,7 @@ export const webhookIngestionHandler = async (
     const pipeline = await getPipelineByID(pipelineId);
 
     if (!pipeline) {
-      throw new BadRequestError("Pipeline not found");
+      throw new NotFoundError("Pipeline Not Found");
     }
 
     const APIKey = req.get("X-API-Key");
