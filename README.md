@@ -5,8 +5,8 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [Key Features](#key-features)
-- [Goal](#goal)
+  - [Key Features](#key-features)
+  - [Goal](#goal)
 - [API Documentation](#api-documentation)
   - [Interactive Swagger UI](#interactive-swagger-ui)
   - [Available Endpoints](#available-endpoints)
