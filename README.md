@@ -11,12 +11,6 @@
   - [Interactive Swagger UI](#interactive-swagger-ui)
   - [Available Endpoints](#available-endpoints)
   - [Usage](#usage)
-- [Setup](#setup)
-  - [Clone repo](#clone-repo)
-  - [.env setup](#env-setup)
-  - [Install dependencies](#install-dependencies)
-  - [Start all services with Docker](#start-all-services-with-docker)
-- [Running Tests](#running-tests)
 - [Architecture & Design Decisions](#architecture--design-decisions)
   - [Design Decisions](#-design-decisions)
   - [Core Services](#-core-services)
@@ -24,6 +18,12 @@
 - [Pipeline Processing](#pipeline-processing)
   - [Pipeline Steps](#pipeline-steps)
   - [Processing Flow](#processing-flow)
+- [Setup](#setup)
+  - [Clone repo](#clone-repo)
+  - [.env setup](#env-setup)
+  - [Install dependencies](#install-dependencies)
+  - [Start all services with Docker](#start-all-services-with-docker)
+  - [Running Tests](#running-tests)
 
 ## Overview
 
