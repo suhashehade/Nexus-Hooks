@@ -27,7 +27,6 @@ const handleMainJob = async (req: Request, res: Response) => {
       totalPrice: order?.totalPrice,
     });
 
-    // Simulate accounting processing
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     logger.success("✅ Accounting job completed", { orderId: order?.id });

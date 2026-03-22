@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { readFileSync, readdirSync, statSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -8,7 +6,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, "..");
 
-// List of directories to check
 const directories = [
   "server/src",
   "worker/src",
@@ -17,10 +14,8 @@ const directories = [
   "subscribers/shipping/src",
 ];
 
-// File extensions to check
 const extensions = [".ts", ".js"];
 
-// Get all TypeScript/JavaScript files in directories
 function getAllFiles(dir, fileList = []) {
   const files = readdirSync(dir);
 
@@ -38,7 +33,6 @@ function getAllFiles(dir, fileList = []) {
   return fileList;
 }
 
-// Check if a file is imported/referenced anywhere
 function isFileUsed(filePath, allFiles) {
   const fileName = filePath
     .split("/")
@@ -46,9 +40,8 @@ function isFileUsed(filePath, allFiles) {
     .replace(/\.(ts|js)$/, "");
 
   for (const file of allFiles) {
-    if (file === filePath) continue; // Skip self
+    if (file === filePath) continue;
 
-    // Skip test files from checking
     if (
       file.includes(".test.") ||
       file.includes(".spec.") ||
@@ -60,7 +53,6 @@ function isFileUsed(filePath, allFiles) {
     try {
       const content = readFileSync(file, "utf8");
 
-      // Check for imports
       if (
         content.includes(`from '${filePath}'`) ||
         content.includes(`from "${filePath}"`) ||
@@ -78,13 +70,10 @@ function isFileUsed(filePath, allFiles) {
         return true;
       }
 
-      // Check for dynamic imports
       if (content.includes(filePath) || content.includes(fileName)) {
         return true;
       }
-    } catch (error) {
-      // Skip files that can't be read
-    }
+    } catch (error) {}
   }
 
   return false;
@@ -101,7 +90,6 @@ async function main() {
     try {
       const files = getAllFiles(dirPath);
 
-      // Filter out test files from the list of files to check
       const nonTestFiles = files.filter(
         (file) =>
           !file.includes(".test.") &&

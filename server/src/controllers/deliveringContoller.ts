@@ -50,7 +50,6 @@ export const deliverHandler = async (
       logger.jobCompleted(jobName, { deliveredOrders: orders.length });
     }
 
-    // Call job details API to get formatted data and log it
     try {
       const jobDetails = await getJobDetails(jobId);
 
@@ -62,7 +61,6 @@ export const deliverHandler = async (
         finishedAt: jobDetails?.finishedAt,
       });
 
-      // Log job status history as table
       if (jobDetails?.history) {
         const historyTable = jobDetails?.history.map((h: any) => ({
           Status: h.status,
@@ -85,7 +83,6 @@ export const deliverHandler = async (
         });
       }
 
-      // Log delivery attempts as table
       if (
         jobDetails?.deliveryAttempts &&
         jobDetails?.deliveryAttempts.length > 0

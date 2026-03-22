@@ -16,7 +16,7 @@ describe("transform action", () => {
     const result = await transform(order);
 
     expect(result.status).toBe("success");
-    expect(result.order?.totalPrice).toBe(100); // 50 * 2
+    expect(result.order?.totalPrice).toBe(100);
   });
 
   it("should transform order for shipping subscriber", async () => {

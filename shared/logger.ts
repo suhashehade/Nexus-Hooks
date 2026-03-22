@@ -36,11 +36,11 @@ class PrettyLogger {
     };
 
     const colors = {
-      [LogLevel.INFO]: "\x1b[36m", // Cyan
-      [LogLevel.SUCCESS]: "\x1b[32m", // Green
-      [LogLevel.WARNING]: "\x1b[33m", // Yellow
-      [LogLevel.ERROR]: "\x1b[31m", // Red
-      [LogLevel.DEBUG]: "\x1b[90m", // Gray
+      [LogLevel.INFO]: "\x1b[36m",
+      [LogLevel.SUCCESS]: "\x1b[32m",
+      [LogLevel.WARNING]: "\x1b[33m",
+      [LogLevel.ERROR]: "\x1b[31m",
+      [LogLevel.DEBUG]: "\x1b[90m",
     };
 
     const reset = "\x1b[0m";
