@@ -9,7 +9,6 @@ import webhooksRoute from "./routes/webhook.js";
 import deliverRoute from "./routes/delivery.js";
 import { errorHandlerMiddleware } from "./middlewares/handleErrors.js";
 
-// Only import Swagger in development
 let swaggerUi, specs;
 if (process.env.NODE_ENV !== "production") {
   try {
@@ -37,7 +36,6 @@ app.use("/api/jobs", jobsRoutes);
 app.use("/api/nexus/webhooks", webhooksRoute);
 app.use("/internal/deliver", deliverRoute);
 
-// Serve OpenAPI documentation (always available)
 app.get("/api-docs", (req, res) => {
   const apiDocs = {
     openapi: "3.0.0",
@@ -124,7 +122,6 @@ app.get("/api-docs", (req, res) => {
   res.json(apiDocs);
 });
 
-// Swagger UI only in development and if dependencies are available
 if (process.env.NODE_ENV !== "production" && swaggerUi && specs) {
   app.use("/api-docs-ui", swaggerUi.serve, swaggerUi.setup(specs));
   console.log("📚 Swagger UI available at: http://localhost:4000/api-docs-ui");

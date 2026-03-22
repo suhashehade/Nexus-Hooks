@@ -23,7 +23,6 @@ describe("fork", () => {
     expect(result.orders).toHaveLength(subscribers.length);
     expect(result.orders[0].subscriber).toEqual(subscribers[0]);
     expect(result.orders[1].subscriber).toEqual(subscribers[1]);
-    // Ensure original order is not mutated
     expect(mockOrder.subscriber).toBeUndefined();
   });
 
