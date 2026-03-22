@@ -50,7 +50,6 @@ export const deliverHandler = async (
       logger.jobCompleted(jobName, { deliveredOrders: orders.length });
     }
 
-   
     try {
       const jobDetails = await getJobDetails(jobId);
 
@@ -62,7 +61,6 @@ export const deliverHandler = async (
         finishedAt: jobDetails?.finishedAt,
       });
 
-     
       if (jobDetails?.history) {
         const historyTable = jobDetails?.history.map((h: any) => ({
           Status: h.status,
@@ -85,7 +83,6 @@ export const deliverHandler = async (
         });
       }
 
-      
       if (
         jobDetails?.deliveryAttempts &&
         jobDetails?.deliveryAttempts.length > 0
